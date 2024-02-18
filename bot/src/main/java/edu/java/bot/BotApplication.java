@@ -4,11 +4,18 @@ import edu.java.bot.configuration.ApplicationConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 @EnableConfigurationProperties(ApplicationConfig.class)
 public class BotApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BotApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(BotApplication.class, args);
+        ApplicationConfig config = context.getBean(ApplicationConfig.class);
+
+        try (MyTelegramBot bot = new MyTelegramBot(config.telegramToken())) {
+            bot.start();
+        }
+
     }
 }
