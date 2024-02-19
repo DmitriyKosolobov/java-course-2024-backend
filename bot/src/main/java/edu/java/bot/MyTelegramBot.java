@@ -59,7 +59,9 @@ public class MyTelegramBot implements Bot {
             List<Update> updates = updatesResponse.updates();
             if (updates != null && !updates.isEmpty()) {
                 int processedUpdates = process(updates);
-                offset = updates.get(processedUpdates - 1).updateId() + 1;
+                if (processedUpdates > 0) {
+                    offset = updates.get(processedUpdates - 1).updateId() + 1;
+                }
             }
         }
     }

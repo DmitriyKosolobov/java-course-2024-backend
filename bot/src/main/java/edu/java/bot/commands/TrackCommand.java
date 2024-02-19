@@ -14,10 +14,16 @@ public class TrackCommand implements Command {
         return "Начать отслеживание ссылки";
     }
 
+    @SuppressWarnings("MagicNumber")
     @Override
     public boolean supports(Update update) {
-        return update.message() != null && update.message().text() != null
-            && update.message().text().startsWith(command());
+        if (update.message() != null) {
+            if (update.message().text() != null) {
+                String text = update.message().text();
+                return text.substring(0, 6).equals(command()) && text.charAt(6) == ' ';
+            }
+        }
+        return false;
     }
 
     @Override
@@ -27,7 +33,7 @@ public class TrackCommand implements Command {
         String input = update.message().text();
         int spaceIndex = input.indexOf(' ');
         if (spaceIndex != -1) {
-            String url = input.substring(spaceIndex + 1);
+            String url = input.substring(spaceIndex + 1).trim();
             if (UrlChecker.isValid(url)) {
 
                 //Проверка на наличие ссылки в списке

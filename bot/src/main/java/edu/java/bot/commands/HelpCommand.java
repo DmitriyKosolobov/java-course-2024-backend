@@ -2,6 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import java.util.List;
 
 public class HelpCommand implements Command {
     @Override
@@ -22,13 +23,22 @@ public class HelpCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
 
-        String messageText = "Список доступных команд:\n"
-            + "/start - Зарегистрировать пользователя\n"
-            + "/help - Вывести окно с командами\n"
-            + "/track - Начать отслеживание ссылки\n"
-            + "/untrack - Прекратить отслеживание ссылки\n"
-            + "/list - Показать список отслеживаемых ссылок";
+        StringBuilder messageText = new StringBuilder("Список доступных команд:\n");
+        List<Command> commands = CommandRegistry.getRegisteredCommands();
 
-        return new SendMessage(update.message().chat().id(), messageText);
+        for (Command com : commands) {
+            messageText.append(com.command())
+                .append(" - ")
+                .append(com.description())
+                .append("\n");
+        }
+//        String messageText = "Список доступных команд:\n"
+//            + "/start - Зарегистрировать пользователя\n"
+//            + "/help - Вывести окно с командами\n"
+//            + "/track - Начать отслеживание ссылки\n"
+//            + "/untrack - Прекратить отслеживание ссылки\n"
+//            + "/list - Показать список отслеживаемых ссылок";
+
+        return new SendMessage(update.message().chat().id(), messageText.toString());
     }
 }
