@@ -18,8 +18,8 @@ public class TrackCommand implements Command {
     @Override
     public boolean supports(Update update) {
         if (update.message() != null) {
-            if (update.message().text() != null) {
-                String text = update.message().text();
+            String text = update.message().text();
+            if (text != null && text.startsWith(command() + " ")) {
                 return text.substring(0, 6).equals(command()) && text.charAt(6) == ' ';
             }
         }

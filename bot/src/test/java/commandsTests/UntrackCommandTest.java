@@ -1,6 +1,7 @@
 package commandsTests;
 
 
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.UntrackCommand;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +16,19 @@ import static org.mockito.Mockito.when;
 public class UntrackCommandTest {
 
     private final UntrackCommand untrackCommand = new UntrackCommand();
+
+    @Test
+    @DisplayName("Проверка метода toApiCommand")
+    public void toApiCommandTest(){
+        BotCommand botCommandMock = Mockito.mock(BotCommand.class);
+
+        when(botCommandMock.command()).thenReturn("/untrack");
+        when(botCommandMock.description()).thenReturn("Прекратить отслеживание ссылки");
+
+        BotCommand result = untrackCommand.toApiCommand();
+        Assertions.assertEquals(botCommandMock.command(),result.command());
+        Assertions.assertEquals(botCommandMock.description(),result.description());
+    }
 
     @Test
     @DisplayName("Проверка метода supports c корретной командой")

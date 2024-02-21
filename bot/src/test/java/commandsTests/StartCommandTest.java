@@ -1,6 +1,7 @@
 package commandsTests;
 
 
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.StartCommand;
@@ -16,6 +17,19 @@ import static org.mockito.Mockito.when;
 public class StartCommandTest {
 
     private final StartCommand startCommand = new StartCommand();
+
+    @Test
+    @DisplayName("Проверка метода toApiCommand")
+    public void toApiCommandTest(){
+        BotCommand botCommandMock = Mockito.mock(BotCommand.class);
+
+        when(botCommandMock.command()).thenReturn("/start");
+        when(botCommandMock.description()).thenReturn("Зарегистрировать пользователя");
+
+        BotCommand result = startCommand.toApiCommand();
+        Assertions.assertEquals(botCommandMock.command(),result.command());
+        Assertions.assertEquals(botCommandMock.description(),result.description());
+    }
 
     @Test
     @DisplayName("Проверка метода supports c корретной командой")

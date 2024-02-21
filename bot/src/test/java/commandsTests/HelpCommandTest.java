@@ -1,5 +1,6 @@
 package commandsTests;
 
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.junit.jupiter.api.Assertions;
 import com.pengrad.telegrambot.model.Chat;
@@ -14,6 +15,19 @@ import static org.mockito.Mockito.when;
 public class HelpCommandTest {
 
     private final HelpCommand helpCommand = new HelpCommand();
+
+    @Test
+    @DisplayName("Проверка метода toApiCommand")
+    public void toApiCommandTest(){
+        BotCommand botCommandMock = Mockito.mock(BotCommand.class);
+
+        when(botCommandMock.command()).thenReturn("/help");
+        when(botCommandMock.description()).thenReturn("Вывести окно с командами");
+
+        BotCommand result = helpCommand.toApiCommand();
+        Assertions.assertEquals(botCommandMock.command(),result.command());
+        Assertions.assertEquals(botCommandMock.description(),result.description());
+    }
 
     @Test
     @DisplayName("Проверка метода supports c корретной командой")

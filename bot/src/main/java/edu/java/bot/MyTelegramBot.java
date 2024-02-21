@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -23,6 +24,7 @@ public class MyTelegramBot implements Bot {
         List<Command> commands = CommandRegistry.getRegisteredCommands();
         this.messageProcessor = new TelegramUserMessageProcessor(commands);
         this.bot = new TelegramBot(botToken);
+        bot.execute(new SetMyCommands(CommandRegistry.getCommandsForMenu()));
     }
 
     @Override

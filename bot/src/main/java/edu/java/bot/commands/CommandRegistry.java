@@ -1,5 +1,6 @@
 package edu.java.bot.commands;
 
+import com.pengrad.telegrambot.model.BotCommand;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,16 @@ public class CommandRegistry {
         commands.add(new TrackCommand());
         commands.add(new UntrackCommand());
         commands.add(new ListCommand());
+        return commands;
+    }
+
+    public static BotCommand[] getCommandsForMenu() {
+        List<Command> commandsList = getRegisteredCommands();
+        int size = commandsList.size();
+        BotCommand[] commands = new BotCommand[size];
+        for (int i = 0; i < size; i++) {
+            commands[i] = commandsList.get(i).toApiCommand();
+        }
         return commands;
     }
 }
