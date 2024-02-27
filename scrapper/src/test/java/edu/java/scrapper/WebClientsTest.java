@@ -1,14 +1,13 @@
 package edu.java.scrapper;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.client.GitHubClientImpl;
 import edu.java.client.StackOverflowClientImpl;
 import edu.java.client.dto.GitHubRepositoryResponse;
 import edu.java.client.dto.StackOverflowQuestionItem;
 import edu.java.client.dto.StackOverflowQuestionResponse;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Instant;
@@ -22,14 +21,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@WireMockTest(httpPort = 8080)
 public class WebClientsTest {
-
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule();
-
     private WebClient webClient;
 
-    @Before
+    @BeforeEach
     public void setup() {
         webClient = WebClient.builder().baseUrl("http://localhost:8080/").build();
     }
