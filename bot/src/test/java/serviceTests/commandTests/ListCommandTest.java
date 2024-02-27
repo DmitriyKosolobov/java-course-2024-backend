@@ -1,8 +1,8 @@
-package commandsTests;
+package serviceTests.commandTests;
 
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.commands.TrackCommand;
+import edu.java.bot.service.command.ListCommand;
 import org.junit.jupiter.api.Assertions;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
@@ -12,22 +12,23 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 
-public class TrackCommandTest {
+public class ListCommandTest {
 
-    private final TrackCommand trackCommand = new TrackCommand();
+    private final ListCommand listCommand = new ListCommand();
 
     @Test
     @DisplayName("Проверка метода toApiCommand")
     public void toApiCommandTest(){
         BotCommand botCommandMock = Mockito.mock(BotCommand.class);
 
-        when(botCommandMock.command()).thenReturn("/track");
-        when(botCommandMock.description()).thenReturn("Начать отслеживание ссылки");
+        when(botCommandMock.command()).thenReturn("/list");
+        when(botCommandMock.description()).thenReturn("Показать список отслеживаемых ссылок");
 
-        BotCommand result = trackCommand.toApiCommand();
+        BotCommand result = listCommand.toApiCommand();
         Assertions.assertEquals(botCommandMock.command(),result.command());
         Assertions.assertEquals(botCommandMock.description(),result.description());
     }
+
     @Test
     @DisplayName("Проверка метода supports c корретной командой")
     public void supportsTest1(){
@@ -35,9 +36,9 @@ public class TrackCommandTest {
         Message messageMock = Mockito.mock(Message.class);
 
         when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.text()).thenReturn("/track https://stackoverflow.com/");
+        when(messageMock.text()).thenReturn("/list");
 
-        boolean result = trackCommand.supports(updateMock);
+        boolean result = listCommand.supports(updateMock);
         Assertions.assertTrue(result);
     }
 
@@ -48,9 +49,9 @@ public class TrackCommandTest {
         Message messageMock = Mockito.mock(Message.class);
 
         when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.text()).thenReturn("/trackjvrvjf https://stackoverflow.com/");
+        when(messageMock.text()).thenReturn("/listwdjwfkq");
 
-        boolean result = trackCommand.supports(updateMock);
+        boolean result = listCommand.supports(updateMock);
         Assertions.assertFalse(result);
     }
 
@@ -59,7 +60,7 @@ public class TrackCommandTest {
     public void supportsTest3(){
         Update updateMock = Mockito.mock(Update.class);
 
-        boolean result = trackCommand.supports(updateMock);
+        boolean result = listCommand.supports(updateMock);
         Assertions.assertFalse(result);
     }
 
@@ -71,44 +72,24 @@ public class TrackCommandTest {
 
         when(updateMock.message()).thenReturn(messageMock);
 
-        boolean result = trackCommand.supports(updateMock);
+        boolean result = listCommand.supports(updateMock);
         Assertions.assertFalse(result);
     }
 
     @Test
-    @DisplayName("Проверка метода handle c корректной ссылкой")
-    public void handleTest1(){
+    @DisplayName("Проверка метода handle")
+    public void handleTest(){
         Update updateMock = Mockito.mock(Update.class);
         Message messageMock = Mockito.mock(Message.class);
         Chat chatMock = Mockito.mock(Chat.class);
 
         when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.text()).thenReturn("/track https://stackoverflow.com/");
         when(messageMock.chat()).thenReturn(chatMock);
         when(chatMock.id()).thenReturn(1L);
 
-        SendMessage testSendMessage = new SendMessage(1L, "Ссылка успешно добавлена к отслеживанию: https://stackoverflow.com/");
+        SendMessage testSendMessage = new SendMessage(1L, "Список отслеживаемых ссылок пуст!");
 
-        SendMessage result = trackCommand.handle(updateMock);
-        Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
-        Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
-    }
-
-    @Test
-    @DisplayName("Проверка метода handle с НЕкорректной ссылкой")
-    public void handleTest2(){
-        Update updateMock = Mockito.mock(Update.class);
-        Message messageMock = Mockito.mock(Message.class);
-        Chat chatMock = Mockito.mock(Chat.class);
-
-        when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.text()).thenReturn("/track   fjdfjdj");
-        when(messageMock.chat()).thenReturn(chatMock);
-        when(chatMock.id()).thenReturn(1L);
-
-        SendMessage testSendMessage = new SendMessage(1L, "Введите корректную ссылку");
-
-        SendMessage result = trackCommand.handle(updateMock);
+        SendMessage result = listCommand.handle(updateMock);
         Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
         Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
     }

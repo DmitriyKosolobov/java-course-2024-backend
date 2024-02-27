@@ -1,8 +1,11 @@
-package edu.java.bot.commands;
+package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.util.UrlChecker;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UntrackCommand implements Command {
     @Override
     public String command() {
@@ -12,18 +15,6 @@ public class UntrackCommand implements Command {
     @Override
     public String description() {
         return "Прекратить отслеживание ссылки";
-    }
-
-    @SuppressWarnings("MagicNumber")
-    @Override
-    public boolean supports(Update update) {
-        if (update.message() != null) {
-            String text = update.message().text();
-            if (text != null && text.startsWith(command() + " ")) {
-                return text.substring(0, 8).equals(command()) && text.charAt(8) == ' ';
-            }
-        }
-        return false;
     }
 
     @Override

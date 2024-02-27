@@ -1,9 +1,11 @@
-package edu.java.bot.commands;
+package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.ArrayList;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ListCommand implements Command {
     @Override
     public String command() {
@@ -13,11 +15,6 @@ public class ListCommand implements Command {
     @Override
     public String description() {
         return "Показать список отслеживаемых ссылок";
-    }
-
-    @Override
-    public boolean supports(Update update) {
-        return update.message() != null && update.message().text() != null && update.message().text().equals(command());
     }
 
     @Override

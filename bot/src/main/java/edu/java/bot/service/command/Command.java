@@ -1,4 +1,4 @@
-package edu.java.bot.commands;
+package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
@@ -11,7 +11,14 @@ public interface Command {
 
     SendMessage handle(Update update);
 
-    boolean supports(Update update);
+    default boolean supports(Update update) {
+        if (update.message() != null) {
+            String text = update.message().text();
+            return text != null && (text.equals(command()) || text.startsWith(command() + ' '));
+        } else {
+            return false;
+        }
+    }
 
     default BotCommand toApiCommand() {
         return new BotCommand(command(), description());

@@ -1,9 +1,9 @@
-package commandsTests;
+package utilTests;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import edu.java.bot.commands.UrlChecker;
+import edu.java.bot.util.UrlChecker;
 
 public class UrlCheckerTest {
     @Test

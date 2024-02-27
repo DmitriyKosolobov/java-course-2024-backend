@@ -1,8 +1,9 @@
-package edu.java.bot.commands;
+package edu.java.bot.util;
 
 import java.net.URL;
+import lombok.experimental.UtilityClass;
 
-@SuppressWarnings("HideUtilityClassConstructor")
+@UtilityClass
 public class UrlChecker {
     public static boolean isValid(String url) {
         try {

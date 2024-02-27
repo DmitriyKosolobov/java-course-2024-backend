@@ -1,30 +1,32 @@
-package commandsTests;
+package serviceTests.commandTests;
+
 
 import com.pengrad.telegrambot.model.BotCommand;
+import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.service.command.StartCommand;
 import org.junit.jupiter.api.Assertions;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.commands.HelpCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 
-public class HelpCommandTest {
+public class StartCommandTest {
 
-    private final HelpCommand helpCommand = new HelpCommand();
+    private final StartCommand startCommand = new StartCommand();
 
     @Test
     @DisplayName("Проверка метода toApiCommand")
     public void toApiCommandTest(){
         BotCommand botCommandMock = Mockito.mock(BotCommand.class);
 
-        when(botCommandMock.command()).thenReturn("/help");
-        when(botCommandMock.description()).thenReturn("Вывести окно с командами");
+        when(botCommandMock.command()).thenReturn("/start");
+        when(botCommandMock.description()).thenReturn("Зарегистрировать пользователя");
 
-        BotCommand result = helpCommand.toApiCommand();
+        BotCommand result = startCommand.toApiCommand();
         Assertions.assertEquals(botCommandMock.command(),result.command());
         Assertions.assertEquals(botCommandMock.description(),result.description());
     }
@@ -36,9 +38,9 @@ public class HelpCommandTest {
         Message messageMock = Mockito.mock(Message.class);
 
         when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.text()).thenReturn("/help");
+        when(messageMock.text()).thenReturn("/start");
 
-        boolean result = helpCommand.supports(updateMock);
+        boolean result = startCommand.supports(updateMock);
         Assertions.assertTrue(result);
     }
 
@@ -49,9 +51,9 @@ public class HelpCommandTest {
         Message messageMock = Mockito.mock(Message.class);
 
         when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.text()).thenReturn("/helpwdjwfkq");
+        when(messageMock.text()).thenReturn("/starttwdjwfkq");
 
-        boolean result = helpCommand.supports(updateMock);
+        boolean result = startCommand.supports(updateMock);
         Assertions.assertFalse(result);
     }
 
@@ -60,7 +62,7 @@ public class HelpCommandTest {
     public void supportsTest3(){
         Update updateMock = Mockito.mock(Update.class);
 
-        boolean result = helpCommand.supports(updateMock);
+        boolean result = startCommand.supports(updateMock);
         Assertions.assertFalse(result);
     }
 
@@ -72,7 +74,7 @@ public class HelpCommandTest {
 
         when(updateMock.message()).thenReturn(messageMock);
 
-        boolean result = helpCommand.supports(updateMock);
+        boolean result = startCommand.supports(updateMock);
         Assertions.assertFalse(result);
     }
 
@@ -82,21 +84,20 @@ public class HelpCommandTest {
         Update updateMock = Mockito.mock(Update.class);
         Message messageMock = Mockito.mock(Message.class);
         Chat chatMock = Mockito.mock(Chat.class);
+        User userMock = Mockito.mock(User.class);
 
         when(updateMock.message()).thenReturn(messageMock);
         when(messageMock.chat()).thenReturn(chatMock);
         when(chatMock.id()).thenReturn(1L);
+        when(messageMock.from()).thenReturn(userMock);
+        when(userMock.id()).thenReturn(1L);
+        when(userMock.firstName()).thenReturn("Ivan");
+        when(userMock.lastName()).thenReturn("Ivanov");
+        when(userMock.username()).thenReturn("ivanovii");
 
-        SendMessage testSendMessage = new SendMessage(1L, """
-                Список доступных команд:
-                /start - Зарегистрировать пользователя
-                /help - Вывести окно с командами
-                /track - Начать отслеживание ссылки
-                /untrack - Прекратить отслеживание ссылки
-                /list - Показать список отслеживаемых ссылок
-                """);
+        SendMessage testSendMessage = new SendMessage(1L, "Пользователь ivanovii Ivan Ivanov (ID: 1) успешно зарегистрирован.");
 
-        SendMessage result = helpCommand.handle(updateMock);
+        SendMessage result = startCommand.handle(updateMock);
         Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
         Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
     }

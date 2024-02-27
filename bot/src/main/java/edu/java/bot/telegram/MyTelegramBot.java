@@ -1,30 +1,30 @@
-package edu.java.bot;
+package edu.java.bot.telegram;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.BaseRequest;
-import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
-import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
-import edu.java.bot.commands.Command;
-import edu.java.bot.commands.CommandRegistry;
-import edu.java.bot.service.TelegramUserMessageProcessor;
 import edu.java.bot.service.UserMessageProcessor;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MyTelegramBot implements Bot {
     private final UserMessageProcessor messageProcessor;
     private final TelegramBot bot;
 
-    public MyTelegramBot(String botToken) {
-        List<Command> commands = CommandRegistry.getRegisteredCommands();
-        this.messageProcessor = new TelegramUserMessageProcessor(commands);
-        this.bot = new TelegramBot(botToken);
-        bot.execute(new SetMyCommands(CommandRegistry.getCommandsForMenu()));
+    @Autowired
+    public MyTelegramBot(UserMessageProcessor messageProcessor, TelegramBot bot) {
+        this.messageProcessor = messageProcessor;
+        this.bot = bot;
+        this.bot.execute(new SetMyCommands(messageProcessor.commandsForMenu()));
     }
 
     @Override
@@ -51,21 +51,18 @@ public class MyTelegramBot implements Bot {
         return processedUpdates;
     }
 
-    @SuppressWarnings("MagicNumber")
+    @PostConstruct
     @Override
     public void start() {
-        int offset = 0;
-        while (true) {
-            GetUpdates getUpdates = new GetUpdates().limit(100).offset(offset).timeout(0);
-            GetUpdatesResponse updatesResponse = bot.execute(getUpdates);
-            List<Update> updates = updatesResponse.updates();
-            if (updates != null && !updates.isEmpty()) {
-                int processedUpdates = process(updates);
-                if (processedUpdates > 0) {
-                    offset = updates.get(processedUpdates - 1).updateId() + 1;
-                }
+        bot.setUpdatesListener(updates -> {
+            process(updates);
+            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        }, e -> {
+            if (e.response() != null) {
+                e.response().errorCode();
+                e.response().description();
             }
-        }
+        });
     }
 
     @Override

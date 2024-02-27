@@ -1,23 +1,54 @@
 package serviceTests;
 
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.commands.Command;
-import edu.java.bot.commands.CommandRegistry;
 import edu.java.bot.service.TelegramUserMessageProcessor;
+import edu.java.bot.service.command.Command;
+import edu.java.bot.service.command.HelpCommand;
+import edu.java.bot.service.command.ListCommand;
+import edu.java.bot.service.command.StartCommand;
+import edu.java.bot.service.command.TrackCommand;
+import edu.java.bot.service.command.UntrackCommand;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
+import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.when;
 
 public class TelegramUserMessageProcessorTest {
 
-    List<Command> commands = CommandRegistry.getRegisteredCommands();
-    TelegramUserMessageProcessor messageProcessor = new TelegramUserMessageProcessor(commands);
+    private TelegramUserMessageProcessor messageProcessor;
+
+    @BeforeEach
+    public void setup() {
+        List<Command> commands = new ArrayList<>();
+        commands.add(new StartCommand());
+        commands.add(new HelpCommand(commands));
+        commands.add(new TrackCommand());
+        commands.add(new UntrackCommand());
+        commands.add(new ListCommand());
+        messageProcessor = new TelegramUserMessageProcessor(commands);
+    }
+
+    @Test
+    @DisplayName("Проверка метода commands")
+    public void commandsTest() {
+        List<Command> commandList = messageProcessor.commands();
+        Assertions.assertEquals(5,commandList.size());
+    }
+
+    @Test
+    @DisplayName("Проверка метода commandsForMenu")
+    public void commandsForMenuTest() {
+        BotCommand[] commandList = messageProcessor.commandsForMenu();
+        Assertions.assertEquals(5,commandList.length);
+    }
 
     @Test
     @DisplayName("Проверка метода process c корректной командой")
@@ -37,8 +68,7 @@ public class TelegramUserMessageProcessorTest {
                 /help - Вывести окно с командами
                 /track - Начать отслеживание ссылки
                 /untrack - Прекратить отслеживание ссылки
-                /list - Показать список отслеживаемых ссылок
-                """);
+                /list - Показать список отслеживаемых ссылок""");
 
         SendMessage result = messageProcessor.process(updateMock);
         Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
