@@ -29,10 +29,10 @@ public class TelegramUserMessageProcessorTest {
     public void setup() {
         List<Command> commands = new ArrayList<>();
         commands.add(new StartCommand());
-        commands.add(new HelpCommand(commands));
         commands.add(new TrackCommand());
         commands.add(new UntrackCommand());
         commands.add(new ListCommand());
+        HelpCommand helpCommand = new HelpCommand(commands);
         messageProcessor = new TelegramUserMessageProcessor(commands);
     }
 
@@ -64,8 +64,8 @@ public class TelegramUserMessageProcessorTest {
 
         SendMessage testSendMessage = new SendMessage(1L, """
                 Список доступных команд:
-                /start - Зарегистрировать пользователя
                 /help - Вывести окно с командами
+                /start - Зарегистрировать пользователя
                 /track - Начать отслеживание ссылки
                 /untrack - Прекратить отслеживание ссылки
                 /list - Показать список отслеживаемых ссылок""");
