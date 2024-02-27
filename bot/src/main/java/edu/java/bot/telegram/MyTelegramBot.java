@@ -12,7 +12,6 @@ import com.pengrad.telegrambot.response.SendResponse;
 import edu.java.bot.service.UserMessageProcessor;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +19,6 @@ public class MyTelegramBot implements Bot {
     private final UserMessageProcessor messageProcessor;
     private final TelegramBot bot;
 
-    @Autowired
     public MyTelegramBot(UserMessageProcessor messageProcessor, TelegramBot bot) {
         this.messageProcessor = messageProcessor;
         this.bot = bot;
