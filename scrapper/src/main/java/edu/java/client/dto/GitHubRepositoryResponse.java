@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class GitHubRepositoryResponse {
     @JsonProperty("pushed_at")
-    OffsetDateTime pushedAt;
+    private OffsetDateTime pushedAt;
     @JsonProperty("id")
     private long id;
     @JsonProperty("name")

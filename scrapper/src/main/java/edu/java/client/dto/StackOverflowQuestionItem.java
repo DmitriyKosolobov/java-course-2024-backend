@@ -29,6 +29,6 @@ public class StackOverflowQuestionItem {
     private OffsetDateTime creationDate;
 
     @JsonProperty("last_activity_date")
-    OffsetDateTime lastActivityDate;
+    private OffsetDateTime lastActivityDate;
 
 }

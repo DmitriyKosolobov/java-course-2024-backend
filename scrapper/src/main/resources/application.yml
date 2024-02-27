@@ -6,7 +6,7 @@ app:
 
   urls:
     gitHubBaseUrl: https://api.github.com/
-    stackOverflowBaseUrl: https://api.stackexchange.com
+    stackOverflowBaseUrl: https://api.stackexchange.com/
 
 spring:
   application:

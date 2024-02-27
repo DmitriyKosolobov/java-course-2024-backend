@@ -19,7 +19,7 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     @Override
     public Mono<StackOverflowQuestionResponse> fetchQuestion(Long questionId) {
         return webClient.get()
-            .uri("/questions/{questionId}?order=desc&sort=activity&site=stackoverflow", questionId)
+            .uri("2.3/questions/{questionId}?order=desc&sort=activity&site=stackoverflow", questionId)
             .retrieve()
             .bodyToMono(StackOverflowQuestionResponse.class);
     }
