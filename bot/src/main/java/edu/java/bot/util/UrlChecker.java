@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class UrlChecker {
-    public static boolean isValid(String url) {
+    public boolean isValid(String url) {
         try {
             new URL(url).toURI();
             return true;

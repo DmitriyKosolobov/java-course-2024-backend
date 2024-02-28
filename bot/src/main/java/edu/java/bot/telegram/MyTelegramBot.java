@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
+import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.service.UserMessageProcessor;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
@@ -19,9 +20,9 @@ public class MyTelegramBot implements Bot {
     private final UserMessageProcessor messageProcessor;
     private final TelegramBot bot;
 
-    public MyTelegramBot(UserMessageProcessor messageProcessor, TelegramBot bot) {
+    public MyTelegramBot(UserMessageProcessor messageProcessor, ApplicationConfig applicationConfig) {
         this.messageProcessor = messageProcessor;
-        this.bot = bot;
+        this.bot = new TelegramBot(applicationConfig.telegramToken());
         this.bot.execute(new SetMyCommands(messageProcessor.commandsForMenu()));
     }
 
