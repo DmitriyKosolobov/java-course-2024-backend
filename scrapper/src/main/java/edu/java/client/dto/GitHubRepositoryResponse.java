@@ -6,12 +6,13 @@ import lombok.Data;
 
 @Data
 public class GitHubRepositoryResponse {
+    private long id;
+
+    private String name;
+
     @JsonProperty("pushed_at")
     private OffsetDateTime pushedAt;
-    @JsonProperty("id")
-    private long id;
-    @JsonProperty("name")
-    private String name;
+
     @JsonProperty("updated_at")
     private OffsetDateTime updatedAt;
 }

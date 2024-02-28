@@ -1,26 +1,27 @@
 package edu.java.client;
 
 import edu.java.client.dto.StackOverflowQuestionResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.java.configuration.ApplicationConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Component
 public class StackOverflowClientImpl implements StackOverflowClient {
 
     private final WebClient webClient;
 
-    @Autowired
-    public StackOverflowClientImpl(WebClient stackOverflowWebClient) {
-        this.webClient = stackOverflowWebClient;
+    public StackOverflowClientImpl(ApplicationConfig applicationConfig) {
+        this.webClient = WebClient.builder()
+            .baseUrl(applicationConfig.urls().stackOverflowBaseUrl())
+            .build();
     }
 
     @Override
-    public Mono<StackOverflowQuestionResponse> fetchQuestion(Long questionId) {
+    public StackOverflowQuestionResponse fetchQuestion(Long questionId) {
         return webClient.get()
             .uri("2.3/questions/{questionId}?order=desc&sort=activity&site=stackoverflow", questionId)
             .retrieve()
-            .bodyToMono(StackOverflowQuestionResponse.class);
+            .bodyToMono(StackOverflowQuestionResponse.class)
+            .block();
     }
 }
