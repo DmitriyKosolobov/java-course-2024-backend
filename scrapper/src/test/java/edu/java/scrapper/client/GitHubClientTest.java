@@ -14,7 +14,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @WireMockTest(httpPort = 8080)
@@ -29,7 +30,7 @@ public class GitHubClientTest {
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody(
-                    "{\"id\": 1, \"name\": \"repo\", \"pushed_at\": \"2024-01-26T19:16:51Z\", \"updated_at\": \"2024-01-26T19:18:00Z\"}")));
+                    "{\"id\": 1, \"name\": \"repo\", \"pushed_at\": \"2024-01-26T19:16:51Z\", \"updated_at\": \"2024-01-26T19:18:01Z\"}")));
 
         ApplicationConfig applicationConfigMock = Mockito.mock(ApplicationConfig.class);
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
@@ -41,12 +42,11 @@ public class GitHubClientTest {
         GitHubRepositoryResponse response = gitHubClient.fetchRepository("owner", "repo");
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo")));
-        assert response != null;
-        assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getName()).isEqualTo("repo");
-        assertThat(response.getPushedAt()).isEqualTo("2024-01-26T19:16:51Z");
-        assertThat(response.getUpdatedAt()).isEqualTo("2024-01-26T19:18:00Z");
-
+        assertNotNull(response);
+        assertEquals(1L,response.getId());
+        assertEquals("repo",response.getName());
+        assertEquals("2024-01-26T19:16:51Z",response.getPushedAt().toString());
+        assertEquals("2024-01-26T19:18:01Z",response.getUpdatedAt().toString());
     }
 
 }

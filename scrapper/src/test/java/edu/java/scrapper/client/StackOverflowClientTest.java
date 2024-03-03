@@ -17,7 +17,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @WireMockTest(httpPort = 8080)
@@ -44,14 +46,14 @@ public class StackOverflowClientTest {
         StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(1L);
 
         verify(getRequestedFor(urlEqualTo("/2.3/questions/1?order=desc&sort=activity&site=stackoverflow")));
-        assert response != null;
+        assertNotNull(response);
         StackOverflowQuestionItem responseItem = response.getItems().getFirst();
-        assertThat(responseItem.getQuestionId()).isEqualTo(1L);
-        assertThat(responseItem.isAnswered()).isTrue();
-        assertThat(responseItem.getViewCount()).isEqualTo(2);
-        assertThat(responseItem.getAnswerCount()).isEqualTo(2);
-        assertThat(responseItem.getScore()).isEqualTo(2);
-        assertThat(responseItem.getCreationDate()).isEqualTo(Instant.ofEpochSecond(1351578086).atOffset(ZoneOffset.UTC));
-        assertThat(responseItem.getLastActivityDate()).isEqualTo(Instant.ofEpochSecond(1352102450).atOffset(ZoneOffset.UTC));
+        assertEquals(1L,responseItem.getQuestionId());
+        assertTrue(responseItem.isAnswered());
+        assertEquals(2,responseItem.getViewCount());
+        assertEquals(2,responseItem.getAnswerCount());
+        assertEquals(2,responseItem.getScore());
+        assertEquals(Instant.ofEpochSecond(1351578086).atOffset(ZoneOffset.UTC),responseItem.getCreationDate());
+        assertEquals(Instant.ofEpochSecond(1352102450).atOffset(ZoneOffset.UTC),responseItem.getLastActivityDate());
     }
 }
