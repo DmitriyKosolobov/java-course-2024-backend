@@ -3,6 +3,7 @@ package edu.java.bot.client;
 import edu.java.bot.controller.dto.AddLinkRequest;
 import edu.java.bot.controller.dto.LinkResponse;
 import edu.java.bot.controller.dto.ListLinksResponse;
+import edu.java.bot.controller.dto.RemoveLinkRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,6 +30,6 @@ public interface ScrapperClient {
     @DeleteExchange("/links")
     LinkResponse deleteLink(
         @RequestHeader("Tg-Chat-Id") Integer chatId,
-        @RequestBody AddLinkRequest addLinkRequest
+        @RequestBody RemoveLinkRequest removeLinkRequest
     );
 }

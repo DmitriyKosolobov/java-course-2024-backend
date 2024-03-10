@@ -1,6 +1,6 @@
-package edu.java.controller;
+package edu.java.bot.controller;
 
-import edu.java.controller.dto.ErrorResponse;
+import edu.java.bot.controller.dto.ErrorResponse;
 import java.util.Arrays;
 import java.util.Objects;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ResponseExceptionController {
+public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handler(Exception ex) {
