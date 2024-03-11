@@ -5,6 +5,7 @@ import edu.java.controller.dto.LinkResponse;
 import edu.java.controller.dto.ListLinksResponse;
 import edu.java.controller.dto.RemoveLinkRequest;
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class MainController {
     @GetMapping("/links")
     public ResponseEntity<ListLinksResponse> getLinks(@RequestHeader("Tg-Chat-Id") Integer chatId) {
         var listLinksResponse =
-            new ListLinksResponse(List.of(new LinkResponse(1, "https://github.com/dashboard")), 1);
+            new ListLinksResponse(List.of(new LinkResponse(1, URI.create("https://github.com/dashboard"))), 1);
         return new ResponseEntity<>(listLinksResponse, HttpStatus.OK);
     }
 
@@ -41,7 +42,7 @@ public class MainController {
         @RequestHeader("Tg-Chat-Id") Integer chatId,
         @RequestBody @Valid AddLinkRequest addLinkRequest
     ) {
-        var linkResponse = new LinkResponse(1, "https://github.com");
+        var linkResponse = new LinkResponse(1, URI.create("https://github.com"));
         return new ResponseEntity<>(linkResponse, HttpStatus.OK);
     }
 
@@ -50,7 +51,7 @@ public class MainController {
         @RequestHeader("Tg-Chat-Id") Integer chatId,
         @RequestBody @Valid RemoveLinkRequest removeLinkRequest
     ) {
-        var linkResponse = new LinkResponse(1, "https://stackoverflow.com/");
+        var linkResponse = new LinkResponse(1, URI.create("https://stackoverflow.com/"));
         return new ResponseEntity<>(linkResponse, HttpStatus.OK);
     }
 }
