@@ -8,6 +8,10 @@ app:
     gitHubBaseUrl: https://api.github.com/
     stackOverflowBaseUrl: https://api.stackexchange.com/
 
+bot:
+  api:
+    baseurl: http://localhost:8090
+
 spring:
   application:
     name: scrapper
@@ -17,3 +21,5 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+springdoc.swagger-ui.path: /swagger-ui
