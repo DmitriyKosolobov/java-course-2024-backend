@@ -43,10 +43,10 @@ public class GitHubClientTest {
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo")));
         assertNotNull(response);
-        assertEquals(1L,response.getId());
-        assertEquals("repo",response.getName());
-        assertEquals("2024-01-26T19:16:51Z",response.getPushedAt().toString());
-        assertEquals("2024-01-26T19:18:01Z",response.getUpdatedAt().toString());
+        assertEquals(1L,response.id());
+        assertEquals("repo",response.name());
+        assertEquals("2024-01-26T19:16:51Z",response.pushedAt().toString());
+        assertEquals("2024-01-26T19:18:01Z",response.updatedAt().toString());
     }
 
 }

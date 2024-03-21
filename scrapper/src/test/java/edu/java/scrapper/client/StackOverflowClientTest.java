@@ -47,13 +47,13 @@ public class StackOverflowClientTest {
 
         verify(getRequestedFor(urlEqualTo("/2.3/questions/1?order=desc&sort=activity&site=stackoverflow")));
         assertNotNull(response);
-        StackOverflowQuestionItem responseItem = response.getItems().getFirst();
-        assertEquals(1L,responseItem.getQuestionId());
+        StackOverflowQuestionItem responseItem = response.items().getFirst();
+        assertEquals(1L,responseItem.questionId());
         assertTrue(responseItem.isAnswered());
-        assertEquals(2,responseItem.getViewCount());
-        assertEquals(2,responseItem.getAnswerCount());
-        assertEquals(2,responseItem.getScore());
-        assertEquals(Instant.ofEpochSecond(1351578086).atOffset(ZoneOffset.UTC),responseItem.getCreationDate());
-        assertEquals(Instant.ofEpochSecond(1352102450).atOffset(ZoneOffset.UTC),responseItem.getLastActivityDate());
+        assertEquals(2,responseItem.viewCount());
+        assertEquals(2,responseItem.answerCount());
+        assertEquals(2,responseItem.score());
+        assertEquals(Instant.ofEpochSecond(1351578086).atOffset(ZoneOffset.UTC),responseItem.creationDate());
+        assertEquals(Instant.ofEpochSecond(1352102450).atOffset(ZoneOffset.UTC),responseItem.lastActivityDate());
     }
 }
