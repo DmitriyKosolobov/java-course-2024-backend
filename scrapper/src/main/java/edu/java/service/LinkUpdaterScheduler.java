@@ -3,8 +3,10 @@ package edu.java.service;
 import edu.java.client.BotClient;
 import edu.java.client.GitHubClient;
 import edu.java.client.StackOverflowClient;
+import edu.java.client.dto.GitHubCommitResponse;
 import edu.java.client.dto.GitHubRepositoryResponse;
-import edu.java.client.dto.StackOverflowQuestionItem;
+import edu.java.client.dto.StackOverflowAnswerResponse;
+import edu.java.client.dto.StackOverflowQuestionResponse;
 import edu.java.controller.dto.UpdateRequest;
 import edu.java.repository.dto.Link;
 import java.net.URI;
@@ -60,24 +62,39 @@ public class LinkUpdaterScheduler {
         String[] path = url.getPath().split("/");
         String owner = path[1];
         String repo = path[2];
-        GitHubRepositoryResponse res = gitHubClient.fetchRepository(owner, repo);
-        if (link.lastCheckTime().isBefore(res.pushedAt())
-            || link.lastCheckTime().isBefore(res.updatedAt())) {
+        GitHubRepositoryResponse repository = gitHubClient.fetchRepository(owner, repo);
+        if (link.lastCheckTime().isBefore(repository.pushedAt())
+            || link.lastCheckTime().isBefore(repository.updatedAt())) {
 
+            String description = "Обновление в репозитории";
             linkUpdater.update(link.id());
+
+            GitHubCommitResponse commits = gitHubClient.fetchCommit(owner, repo);
+            if (commits.items().size() != link.commitsCount()) {
+                description += (": новый коммит\n" + commits.items().getFirst().commit().message());
+            }
+
             List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
-            sendBotUpdates(link, "Обновление в репозитории", tgChatIds);
+            sendBotUpdates(link, description, tgChatIds);
         }
     }
 
     private void stackOverflowHandler(Link link, URI url) {
         Long questionId = Long.parseLong(url.getPath().split("/")[2]);
-        StackOverflowQuestionItem res = stackOverflowClient.fetchQuestion(questionId).items().getFirst();
+        StackOverflowQuestionResponse.StackOverflowQuestionItem res =
+            stackOverflowClient.fetchQuestion(questionId).items().getFirst();
         if (link.lastCheckTime().isBefore(res.lastActivityDate())) {
 
+            String description = "Новая информация по вопросу";
             linkUpdater.update(link.id());
+
+            StackOverflowAnswerResponse answers = stackOverflowClient.fetchAnswer(questionId);
+            if (answers.items().size() != link.answersCount()) {
+                description += (": появился новый ответ в " + answers.items().getFirst().creationDate());
+            }
+
             List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
-            sendBotUpdates(link, "Новая информация по вопросу", tgChatIds);
+            sendBotUpdates(link, description, tgChatIds);
         }
     }
 

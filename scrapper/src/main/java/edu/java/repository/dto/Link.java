@@ -5,6 +5,8 @@ import java.time.OffsetDateTime;
 public record Link(
     Long id,
     String url,
-    OffsetDateTime lastCheckTime
+    OffsetDateTime lastCheckTime,
+    Long answersCount,
+    Long commitsCount
 ) {
 }

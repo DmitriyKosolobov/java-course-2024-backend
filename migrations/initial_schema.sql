@@ -23,3 +23,9 @@ create table ChatsLinks (
     link_id bigint not null references Links (id),
     unique (chat_id,link_id)
 );
+
+--changeset dmitriykosolobov:4
+--comment: Add columns in Links table
+alter table Links
+add column answers_count bigint default 0 not null,
+add column commits_count bigint default 0 not null;

@@ -36,7 +36,9 @@ public class LinkRepository {
         return jdbcTemplate.query(sql, (row, item) -> new Link(
             row.getLong("id"),
             row.getString("url"),
-            parseDate(row.getString("last_check_time"))
+            parseDate(row.getString("last_check_time")),
+            row.getLong("answers_count"),
+            row.getLong("commits_count")
         ));
     }
 
@@ -49,7 +51,9 @@ public class LinkRepository {
         return jdbcTemplate.query(sql, (row, item) -> new Link(
             row.getLong("id"),
             row.getString("url"),
-            parseDate(row.getString("last_check_time"))
+            parseDate(row.getString("last_check_time")),
+            row.getLong("answers_count"),
+            row.getLong("commits_count")
         ), chatId);
     }
 
@@ -68,7 +72,9 @@ public class LinkRepository {
             return jdbcTemplate.queryForObject(sql, (row, item) -> new Link(
                 row.getLong("id"),
                 row.getString("url"),
-                parseDate(row.getString("last_check_time"))
+                parseDate(row.getString("last_check_time")),
+                row.getLong("answers_count"),
+                row.getLong("commits_count")
             ), url);
         } catch (Exception e) {
             return null;
@@ -123,7 +129,9 @@ public class LinkRepository {
         return jdbcTemplate.query(sql, (row, item) -> new Link(
             row.getLong("id"),
             row.getString("url"),
-            parseDate(row.getString("last_check_time"))
+            parseDate(row.getString("last_check_time")),
+            row.getLong("answers_count"),
+            row.getLong("commits_count")
         ));
     }
 

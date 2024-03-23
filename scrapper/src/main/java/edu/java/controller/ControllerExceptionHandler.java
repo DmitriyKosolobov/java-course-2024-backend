@@ -18,15 +18,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handler(Exception ex) {
-        var stacktrace = Arrays.stream(ex.getStackTrace()).map(Objects::toString).toList();
-        var errorResponse = new ErrorResponse(
-            "400",
-            "Неверный формат url",
-            ex.getClass().getSimpleName(),
-            ex.getMessage(),
-            null
-        );
+    public ResponseEntity<?> invalidLinkHandler(Exception ex) {
+        var errorResponse = createErrorResponse(ex, "Неверный формат url", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
