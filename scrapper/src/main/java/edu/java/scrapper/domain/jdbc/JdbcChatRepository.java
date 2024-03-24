@@ -2,7 +2,6 @@ package edu.java.scrapper.domain.jdbc;
 
 import edu.java.scrapper.domain.jdbc.dto.Chat;
 import java.util.List;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

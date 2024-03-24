@@ -9,7 +9,9 @@ import org.jooq.meta.jaxb.Property;
 import org.jooq.meta.jaxb.Target;
 
 public class JooqCodegen {
-    public static void main(String[] args) throws Exception {
+    private JooqCodegen() {}
+
+    public static void generate(String[] args) throws Exception {
         Database database = new Database()
             .withName("org.jooq.meta.extensions.liquibase.LiquibaseDatabase")
             .withProperties(
