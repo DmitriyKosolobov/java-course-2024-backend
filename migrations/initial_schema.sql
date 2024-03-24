@@ -12,7 +12,9 @@ create table Chats (
 create table Links (
     id bigserial primary key,
     url varchar(255) not null unique,
-    last_check_time timestamp with time zone default now() not null
+    last_check_time timestamp with time zone default now() not null,
+    answers_count bigint default 0 not null,
+    commits_count bigint default 0 not null
 );
 
 --changeset dmitriykosolobov:3
@@ -23,9 +25,3 @@ create table ChatsLinks (
     link_id bigint not null references Links (id),
     unique (chat_id,link_id)
 );
-
---changeset dmitriykosolobov:4
---comment: Add columns in Links table
-alter table Links
-add column answers_count bigint default 0 not null,
-add column commits_count bigint default 0 not null;

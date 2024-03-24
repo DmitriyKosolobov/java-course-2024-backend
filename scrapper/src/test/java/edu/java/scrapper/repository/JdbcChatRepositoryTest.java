@@ -1,14 +1,13 @@
 package edu.java.scrapper.repository;
 
-import edu.java.repository.ChatRepository;
-import edu.java.repository.dto.Chat;
+import edu.java.scrapper.domain.jdbc.JdbcChatRepository;
+import edu.java.scrapper.domain.jdbc.dto.Chat;
 import edu.java.scrapper.IntegrationTest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,14 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcChatRepositoryTest extends IntegrationTest {
 
     @Autowired
-    private ChatRepository chatRepository;
+    private JdbcChatRepository jdbcChatRepository;
 
     @Test
     @Transactional
     @Rollback
     void addTest() {
-        Chat addedChat = chatRepository.add(7L);
-        List<Chat> chats = chatRepository.findAll();
+        Chat addedChat = jdbcChatRepository.add(7L);
+        List<Chat> chats = jdbcChatRepository.findAll();
 
         Assertions.assertEquals(7L, addedChat.chatId());
         Assertions.assertEquals(1, chats.size());
@@ -34,10 +33,10 @@ public class JdbcChatRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void removeTest() {
-        chatRepository.add(7L);
-        int res1 = chatRepository.remove(7L);
-        int res2 = chatRepository.remove(9L);
-        List<Chat> chats = chatRepository.findAll();
+        jdbcChatRepository.add(7L);
+        int res1 = jdbcChatRepository.remove(7L);
+        int res2 = jdbcChatRepository.remove(9L);
+        List<Chat> chats = jdbcChatRepository.findAll();
 
         Assertions.assertEquals(0, chats.size());
         Assertions.assertEquals(1, res1);
@@ -48,9 +47,9 @@ public class JdbcChatRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findAllTest() {
-        chatRepository.add(8L);
-        chatRepository.add(5L);
-        List<Chat> chats = chatRepository.findAll();
+        jdbcChatRepository.add(8L);
+        jdbcChatRepository.add(5L);
+        List<Chat> chats = jdbcChatRepository.findAll();
 
         Assertions.assertEquals(2, chats.size());
         Assertions.assertEquals(8L, chats.getFirst().chatId());
@@ -61,9 +60,9 @@ public class JdbcChatRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void getChatIdByTgChatId() {
-        chatRepository.add(5L);
-        Long chatId1 = chatRepository.getChatIdByTgChatId(5L);
-        Long chatId2 = chatRepository.getChatIdByTgChatId(7L);
+        jdbcChatRepository.add(5L);
+        Long chatId1 = jdbcChatRepository.getChatIdByTgChatId(5L);
+        Long chatId2 = jdbcChatRepository.getChatIdByTgChatId(7L);
 
         Assertions.assertNotNull(chatId1);
         Assertions.assertNull(chatId2);

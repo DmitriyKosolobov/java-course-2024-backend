@@ -1,10 +1,9 @@
 package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.client.GitHubClientImpl;
-import edu.java.client.dto.GitHubCommitResponse;
-import edu.java.client.dto.GitHubRepositoryResponse;
-import edu.java.configuration.ApplicationConfig;
+import edu.java.scrapper.client.dto.GitHubCommitResponse;
+import edu.java.scrapper.client.dto.GitHubRepositoryResponse;
+import edu.java.scrapper.configuration.ApplicationConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

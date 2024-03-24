@@ -1,8 +1,8 @@
 package edu.java.scrapper.repository;
 
-import edu.java.repository.ChatRepository;
-import edu.java.repository.LinkRepository;
-import edu.java.repository.dto.Link;
+import edu.java.scrapper.domain.jdbc.JdbcChatRepository;
+import edu.java.scrapper.domain.jdbc.JdbcLinkRepository;
+import edu.java.scrapper.domain.jdbc.dto.Link;
 import edu.java.scrapper.IntegrationTest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -16,19 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcLinkRepositoryTest extends IntegrationTest {
 
     @Autowired
-    private ChatRepository chatRepository;
+    private JdbcChatRepository jdbcChatRepository;
 
     @Autowired
-    private LinkRepository linkRepository;
+    private JdbcLinkRepository jdbcLinkRepository;
 
     @Test
     @Transactional
     @Rollback
     void addTest() {
-        Long chatId = chatRepository.add(5L).id();
+        Long chatId = jdbcChatRepository.add(5L).id();
         String url = "https://github.com/dashboard";
-        Link addedLink = linkRepository.add(chatId, url);
-        List<Link> links = linkRepository.findAllByChatId(chatId);
+        Link addedLink = jdbcLinkRepository.add(chatId, url);
+        List<Link> links = jdbcLinkRepository.findAllByChatId(chatId);
 
         Assertions.assertEquals(1, links.size());
         Assertions.assertEquals(url, links.getFirst().url());
@@ -39,17 +39,17 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void removeTest() {
-        Long chatId1 = chatRepository.add(5L).id();
+        Long chatId1 = jdbcChatRepository.add(5L).id();
         String url1 = "https://github.com/dashboard";
-        linkRepository.add(chatId1, url1);
+        jdbcLinkRepository.add(chatId1, url1);
 
-        Long chatId2 = chatRepository.add(3L).id();
+        Long chatId2 = jdbcChatRepository.add(3L).id();
 
-        Link res1 = linkRepository.remove(chatId1, url1);
-        Link res2 = linkRepository.remove(chatId2, url1);
+        Link res1 = jdbcLinkRepository.remove(chatId1, url1);
+        Link res2 = jdbcLinkRepository.remove(chatId2, url1);
 
-        List<Link> links = linkRepository.findAllByChatId(chatId1);
-        List<Link> allLinks = linkRepository.findAll();
+        List<Link> links = jdbcLinkRepository.findAllByChatId(chatId1);
+        List<Link> allLinks = jdbcLinkRepository.findAll();
 
         Assertions.assertEquals(0, allLinks.size());
         Assertions.assertEquals(0, links.size());
@@ -61,17 +61,17 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findAllTest() {
-        Long chatId1 = chatRepository.add(5L).id();
+        Long chatId1 = jdbcChatRepository.add(5L).id();
         String url1 = "https://github.com/dashboard";
         String url2 = "https://stackoverflow.com/";
-        linkRepository.add(chatId1, url1);
-        linkRepository.add(chatId1, url2);
+        jdbcLinkRepository.add(chatId1, url1);
+        jdbcLinkRepository.add(chatId1, url2);
 
-        Long chatId2 = chatRepository.add(9L).id();
+        Long chatId2 = jdbcChatRepository.add(9L).id();
         String url3 = "https://edu.tinkoff.ru/";
-        linkRepository.add(chatId2, url3);
+        jdbcLinkRepository.add(chatId2, url3);
 
-        List<Link> links = linkRepository.findAll();
+        List<Link> links = jdbcLinkRepository.findAll();
 
         Assertions.assertEquals(3, links.size());
         Assertions.assertEquals(url1, links.get(0).url());
@@ -83,18 +83,18 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findAllByChatIdTest() {
-        Long chatId1 = chatRepository.add(5L).id();
+        Long chatId1 = jdbcChatRepository.add(5L).id();
         String url1 = "https://stackoverflow.com/";
         String url2 = "https://github.com/dashboard";
-        linkRepository.add(chatId1, url1);
-        linkRepository.add(chatId1, url2);
+        jdbcLinkRepository.add(chatId1, url1);
+        jdbcLinkRepository.add(chatId1, url2);
 
-        Long chatId2 = chatRepository.add(9L).id();
+        Long chatId2 = jdbcChatRepository.add(9L).id();
         String url3 = "https://edu.tinkoff.ru/";
-        linkRepository.add(chatId2, url3);
+        jdbcLinkRepository.add(chatId2, url3);
 
-        List<Link> links = linkRepository.findAllByChatId(chatId1);
-        List<Link> emptyList = linkRepository.findAllByChatId(1000L);
+        List<Link> links = jdbcLinkRepository.findAllByChatId(chatId1);
+        List<Link> emptyList = jdbcLinkRepository.findAllByChatId(1000L);
 
         Assertions.assertEquals(2, links.size());
         Assertions.assertEquals(url1, links.getFirst().url());
