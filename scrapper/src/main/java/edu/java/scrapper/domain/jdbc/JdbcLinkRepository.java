@@ -1,6 +1,6 @@
 package edu.java.scrapper.domain.jdbc;
 
-import edu.java.scrapper.domain.jdbc.dto.Link;
+import edu.java.scrapper.domain.dto.Link;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -32,7 +32,7 @@ public class JdbcLinkRepository {
     }
 
     public List<Link> findAll() {
-        String sql = "SELECT * FROM Links";
+        String sql = "SELECT * FROM links";
         return jdbcTemplate.query(sql, (row, item) -> new Link(
             row.getLong("id"),
             row.getString("url"),
@@ -44,10 +44,10 @@ public class JdbcLinkRepository {
 
     public List<Link> findAllByChatId(Long chatId) {
         String sql = """
-            SELECT Links.*
-            FROM ChatsLinks
-            JOIN Links ON Links.id = ChatsLinks.link_id
-            WHERE ChatsLinks.chat_id = ?""";
+            SELECT links.*
+            FROM chatslinks
+            JOIN links ON links.id = chatslinks.link_id
+            WHERE chatslinks.chat_id = ?""";
         return jdbcTemplate.query(sql, (row, item) -> new Link(
             row.getLong("id"),
             row.getString("url"),
@@ -58,7 +58,7 @@ public class JdbcLinkRepository {
     }
 
     private Long getLinkIdByUrl(String url) {
-        String sql = "SELECT id FROM Links WHERE url = ?";
+        String sql = "SELECT id FROM links WHERE url = ?";
         try {
             return jdbcTemplate.queryForObject(sql, Long.class, url);
         } catch (Exception e) {
@@ -67,7 +67,7 @@ public class JdbcLinkRepository {
     }
 
     private Link getLinkByUrl(String url) {
-        String sql = "SELECT * FROM Links WHERE url = ?";
+        String sql = "SELECT * FROM links WHERE url = ?";
         try {
             return jdbcTemplate.queryForObject(sql, (row, item) -> new Link(
                 row.getLong("id"),
@@ -86,12 +86,12 @@ public class JdbcLinkRepository {
         Long linkId = getLinkIdByUrl(url);
         if (linkId == null) {
             SimpleJdbcInsert insertIntoLink = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("Links")
+                .withTableName("links")
                 .usingGeneratedKeyColumns("id")
                 .usingColumns("url");
             linkId = insertIntoLink.executeAndReturnKey(Map.of("url", url)).longValue();
         }
-        String sql = "INSERT INTO ChatsLinks (chat_id, link_id) VALUES (?, ?)";
+        String sql = "INSERT INTO chatslinks (chat_id, link_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, chatId, linkId);
 
         return getLinkByUrl(url);
@@ -107,47 +107,46 @@ public class JdbcLinkRepository {
 
         Link link = getLinkByUrl(url);
 
-        String sql = "DELETE FROM ChatsLinks WHERE chat_id = ? AND link_id = ?";
+        String sql = "DELETE FROM chatslinks WHERE chat_id = ? AND link_id = ?";
         int res = jdbcTemplate.update(sql, chatId, linkId);
         if (res == 0) {
             return null;
         }
 
-        sql = "SELECT id FROM ChatsLinks WHERE link_id = ? LIMIT 1";
+        sql = "SELECT id FROM chatslinks WHERE link_id = ? LIMIT 1";
         List<Long> ids = jdbcTemplate.query(sql, (row, item) -> row.getLong("id"), linkId);
 
         if (ids.isEmpty()) {
-            jdbcTemplate.update("DELETE FROM Links WHERE id = ? ", linkId);
+            jdbcTemplate.update("DELETE FROM links WHERE id = ? ", linkId);
         }
         return link;
     }
 
-    public List<Link> findOldCheckedLinks() {
+    public List<Link> findOldCheckedLinks(Long forceCheckDelay) {
         String sql = """
-            SELECT * FROM Links
-            WHERE EXTRACT(EPOCH FROM (now() - last_check_time)) / 60 > 10""";
+            SELECT * FROM links
+            WHERE EXTRACT(EPOCH FROM (now() - last_check_time)) > ?""";
         return jdbcTemplate.query(sql, (row, item) -> new Link(
             row.getLong("id"),
             row.getString("url"),
             parseDate(row.getString("last_check_time")),
             row.getLong("answers_count"),
             row.getLong("commits_count")
-        ));
+        ), forceCheckDelay);
     }
 
     @Transactional
     public int updateLastCheckTime(Long linkId) {
-        String sql = "UPDATE Links SET last_check_time = now() WHERE id = ?";
+        String sql = "UPDATE links SET last_check_time = now() WHERE id = ?";
         return jdbcTemplate.update(sql, linkId);
     }
 
     public List<Long> findAllTgChatIdByLinkId(Long linkId) {
         String sql = """
             SELECT tg_chat_id
-            FROM ChatsLinks
-            JOIN Links ON Links.id = ChatsLinks.link_id
-            JOIN Chats ON Chats.id = ChatsLinks.chat_id
-            WHERE Links.id = ?""";
+            FROM chatslinks
+            JOIN chats ON chats.id = chatslinks.chat_id
+            WHERE chatslinks.link_id = ?""";
         return jdbcTemplate.query(sql, (row, item) -> row.getLong("tg_chat_id"), linkId);
     }
 }

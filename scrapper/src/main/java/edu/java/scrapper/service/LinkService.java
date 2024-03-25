@@ -1,6 +1,6 @@
 package edu.java.scrapper.service;
 
-import edu.java.scrapper.domain.jdbc.dto.Link;
+import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.exception.ExistLinkException;
 import edu.java.scrapper.exception.NotFoundChatException;
 import edu.java.scrapper.exception.NotFoundLinkException;
