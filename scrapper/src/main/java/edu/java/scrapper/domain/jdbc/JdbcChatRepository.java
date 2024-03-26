@@ -1,6 +1,6 @@
 package edu.java.scrapper.domain.jdbc;
 
-import edu.java.scrapper.domain.jdbc.dto.Chat;
+import edu.java.scrapper.domain.dto.Chat;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,13 +16,13 @@ public class JdbcChatRepository {
     }
 
     public List<Chat> findAll() {
-        String sql = "SELECT id, tg_chat_id FROM Chats";
+        String sql = "SELECT id, tg_chat_id FROM chats";
         return jdbcTemplate.query(sql, (row, item) ->
             new Chat(row.getLong("id"), row.getLong("tg_chat_id")));
     }
 
     public Long getChatIdByTgChatId(Long tgChatId) {
-        String sql = "SELECT id FROM Chats WHERE tg_chat_id = ?";
+        String sql = "SELECT id FROM chats WHERE tg_chat_id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, Long.class, tgChatId);
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class JdbcChatRepository {
 
     @Transactional
     public Chat add(Long tgChatId) {
-        String sql = "INSERT INTO Chats VALUES (default, ?)";
+        String sql = "INSERT INTO chats VALUES (default, ?)";
         jdbcTemplate.update(sql, tgChatId);
         Long generatedId = getChatIdByTgChatId(tgChatId);
         return new Chat(generatedId, tgChatId);
@@ -40,7 +40,7 @@ public class JdbcChatRepository {
 
     @Transactional
     public int remove(Long tgChatId) {
-        String sql = "DELETE FROM Chats WHERE tg_chat_id = ?";
+        String sql = "DELETE FROM chats WHERE tg_chat_id = ?";
         return jdbcTemplate.update(sql, tgChatId);
     }
 }

@@ -37,17 +37,20 @@ public class Keys {
 
     public static final UniqueKey<ChatsRecord> CONSTRAINT_3 =
         Internal.createUniqueKey(Chats.CHATS, DSL.name("CONSTRAINT_3"), new TableField[] {Chats.CHATS.ID}, true);
-    public static final UniqueKey<ChatsRecord> CONSTRAINT_3D = Internal.createUniqueKey(Chats.CHATS,
+    public static final UniqueKey<ChatsRecord> CONSTRAINT_3D = Internal.createUniqueKey(
+        Chats.CHATS,
         DSL.name("CONSTRAINT_3D"),
         new TableField[] {Chats.CHATS.TG_CHAT_ID},
         true
     );
-    public static final UniqueKey<ChatslinksRecord> CONSTRAINT_F = Internal.createUniqueKey(Chatslinks.CHATSLINKS,
+    public static final UniqueKey<ChatslinksRecord> CONSTRAINT_F = Internal.createUniqueKey(
+        Chatslinks.CHATSLINKS,
         DSL.name("CONSTRAINT_F"),
         new TableField[] {Chatslinks.CHATSLINKS.ID},
         true
     );
-    public static final UniqueKey<ChatslinksRecord> CONSTRAINT_F023 = Internal.createUniqueKey(Chatslinks.CHATSLINKS,
+    public static final UniqueKey<ChatslinksRecord> CONSTRAINT_F023 = Internal.createUniqueKey(
+        Chatslinks.CHATSLINKS,
         DSL.name("CONSTRAINT_F023"),
         new TableField[] {Chatslinks.CHATSLINKS.CHAT_ID, Chatslinks.CHATSLINKS.LINK_ID},
         true
@@ -62,7 +65,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<ChatslinksRecord, ChatsRecord> CONSTRAINT_F0 =
-        Internal.createForeignKey(Chatslinks.CHATSLINKS,
+        Internal.createForeignKey(
+            Chatslinks.CHATSLINKS,
             DSL.name("CONSTRAINT_F0"),
             new TableField[] {Chatslinks.CHATSLINKS.CHAT_ID},
             Keys.CONSTRAINT_3,
@@ -70,7 +74,8 @@ public class Keys {
             true
         );
     public static final ForeignKey<ChatslinksRecord, LinksRecord> CONSTRAINT_F02 =
-        Internal.createForeignKey(Chatslinks.CHATSLINKS,
+        Internal.createForeignKey(
+            Chatslinks.CHATSLINKS,
             DSL.name("CONSTRAINT_F02"),
             new TableField[] {Chatslinks.CHATSLINKS.LINK_ID},
             Keys.CONSTRAINT_4,

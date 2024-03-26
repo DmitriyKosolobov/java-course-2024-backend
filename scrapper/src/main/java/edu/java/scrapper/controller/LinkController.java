@@ -4,7 +4,7 @@ import edu.java.scrapper.controller.dto.AddLinkRequest;
 import edu.java.scrapper.controller.dto.LinkResponse;
 import edu.java.scrapper.controller.dto.ListLinksResponse;
 import edu.java.scrapper.controller.dto.RemoveLinkRequest;
-import edu.java.scrapper.domain.jdbc.dto.Link;
+import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.exception.ExistLinkException;
 import edu.java.scrapper.exception.NotFoundChatException;
 import edu.java.scrapper.exception.NotFoundLinkException;
@@ -12,6 +12,7 @@ import edu.java.scrapper.service.LinkService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +27,7 @@ public class LinkController {
 
     private final LinkService linkService;
 
-    public LinkController(LinkService linkService) {
+    public LinkController(@Qualifier("jdbcLinkService") LinkService linkService) {
         this.linkService = linkService;
     }
 

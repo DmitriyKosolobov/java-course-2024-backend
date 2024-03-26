@@ -8,11 +8,13 @@ import edu.java.scrapper.client.dto.GitHubRepositoryResponse;
 import edu.java.scrapper.client.dto.StackOverflowAnswerResponse;
 import edu.java.scrapper.client.dto.StackOverflowQuestionResponse;
 import edu.java.scrapper.controller.dto.UpdateRequest;
-import edu.java.scrapper.domain.jdbc.dto.Link;
+import edu.java.scrapper.domain.dto.Link;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +30,11 @@ public class LinkUpdaterScheduler {
 
     private final BotClient botClient;
 
+    @Value("${app.scheduler.force-check-delay}")
+    private Long forceCheckDelay;
+
     public LinkUpdaterScheduler(
-        LinkUpdater linkUpdater, GitHubClient gitHubClient,
+        @Qualifier("jdbcLinkUpdater") LinkUpdater linkUpdater, GitHubClient gitHubClient,
         StackOverflowClient stackOverflowClient, BotClient botClient
     ) {
         this.linkUpdater = linkUpdater;
@@ -41,7 +46,7 @@ public class LinkUpdaterScheduler {
     @Scheduled(fixedDelayString = "#{@scheduler.interval}")
     public void update() {
         log.info("Updating links...");
-        Collection<Link> links = linkUpdater.listAllOldCheckedLinks();
+        Collection<Link> links = linkUpdater.listAllOldCheckedLinks(forceCheckDelay);
         for (Link link : links) {
             checkLink(link);
         }

@@ -1,9 +1,9 @@
-package edu.java.scrapper.repository;
+package edu.java.scrapper.repository.jdbc;
 
+import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.domain.jdbc.JdbcChatRepository;
 import edu.java.scrapper.domain.jdbc.JdbcLinkRepository;
-import edu.java.scrapper.domain.jdbc.dto.Link;
-import edu.java.scrapper.IntegrationTest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
