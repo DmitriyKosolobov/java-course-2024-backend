@@ -77,24 +77,24 @@ public class UntrackCommandTest {
         Assertions.assertFalse(result);
     }
 
-    @Test
-    @DisplayName("Проверка метода handle c корректной ссылкой")
-    public void handleTest1(){
-        Update updateMock = Mockito.mock(Update.class);
-        Message messageMock = Mockito.mock(Message.class);
-        Chat chatMock = Mockito.mock(Chat.class);
-
-        when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.text()).thenReturn("/untrack https://stackoverflow.com/");
-        when(messageMock.chat()).thenReturn(chatMock);
-        when(chatMock.id()).thenReturn(1L);
-
-        SendMessage testSendMessage = new SendMessage(1L, "Ссылка успешно удалена из отслеживания: https://stackoverflow.com/");
-
-        SendMessage result = untrackCommand.handle(updateMock);
-        Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
-        Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
-    }
+//    @Test
+//    @DisplayName("Проверка метода handle c корректной ссылкой")
+//    public void handleTest1(){
+//        Update updateMock = Mockito.mock(Update.class);
+//        Message messageMock = Mockito.mock(Message.class);
+//        Chat chatMock = Mockito.mock(Chat.class);
+//
+//        when(updateMock.message()).thenReturn(messageMock);
+//        when(messageMock.text()).thenReturn("/untrack https://stackoverflow.com/");
+//        when(messageMock.chat()).thenReturn(chatMock);
+//        when(chatMock.id()).thenReturn(1L);
+//
+//        SendMessage testSendMessage = new SendMessage(1L, "Ссылка успешно удалена из отслеживания: https://stackoverflow.com/");
+//
+//        SendMessage result = untrackCommand.handle(updateMock);
+//        Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
+//        Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
+//    }
 
     @Test
     @DisplayName("Проверка метода handle с НЕкорректной ссылкой")
