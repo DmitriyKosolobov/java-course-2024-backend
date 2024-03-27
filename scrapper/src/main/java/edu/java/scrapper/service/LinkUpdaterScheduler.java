@@ -71,12 +71,12 @@ public class LinkUpdaterScheduler {
         if (link.lastCheckTime().isBefore(repository.pushedAt())
             || link.lastCheckTime().isBefore(repository.updatedAt())) {
 
-            String description = "Обновление в репозитории";
+            String description = "(обновление в репозитории)\n";
             linkUpdater.update(link.id());
 
             GitHubCommitResponse commits = gitHubClient.fetchCommit(owner, repo);
             if (commits.items().size() != link.commitsCount()) {
-                description += (": новый коммит\n" + commits.items().getFirst().commit().message());
+                description += ("Новый коммит: " + commits.items().getFirst().commit().message());
             }
 
             List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
@@ -90,12 +90,12 @@ public class LinkUpdaterScheduler {
             stackOverflowClient.fetchQuestion(questionId).items().getFirst();
         if (link.lastCheckTime().isBefore(res.lastActivityDate())) {
 
-            String description = "Новая информация по вопросу";
+            String description = "(новая информация по вопросу)\n";
             linkUpdater.update(link.id());
 
             StackOverflowAnswerResponse answers = stackOverflowClient.fetchAnswer(questionId);
             if (answers.items().size() != link.answersCount()) {
-                description += (": появился новый ответ в " + answers.items().getFirst().creationDate());
+                description += ("Появился новый ответ в " + answers.items().getFirst().creationDate());
             }
 
             List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
