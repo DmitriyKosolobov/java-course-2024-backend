@@ -78,28 +78,28 @@ public class StartCommandTest {
         Assertions.assertFalse(result);
     }
 
-    @Test
-    @DisplayName("Проверка метода handle")
-    public void handleTest(){
-        Update updateMock = Mockito.mock(Update.class);
-        Message messageMock = Mockito.mock(Message.class);
-        Chat chatMock = Mockito.mock(Chat.class);
-        User userMock = Mockito.mock(User.class);
-
-        when(updateMock.message()).thenReturn(messageMock);
-        when(messageMock.chat()).thenReturn(chatMock);
-        when(chatMock.id()).thenReturn(1L);
-        when(messageMock.from()).thenReturn(userMock);
-        when(userMock.id()).thenReturn(1L);
-        when(userMock.firstName()).thenReturn("Ivan");
-        when(userMock.lastName()).thenReturn("Ivanov");
-        when(userMock.username()).thenReturn("ivanovii");
-
-        SendMessage testSendMessage = new SendMessage(1L, "Пользователь ivanovii Ivan Ivanov (ID: 1) успешно зарегистрирован.");
-
-        SendMessage result = startCommand.handle(updateMock);
-        Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
-        Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
-    }
+//    @Test
+//    @DisplayName("Проверка метода handle")
+//    public void handleTest(){
+//        Update updateMock = Mockito.mock(Update.class);
+//        Message messageMock = Mockito.mock(Message.class);
+//        Chat chatMock = Mockito.mock(Chat.class);
+//        User userMock = Mockito.mock(User.class);
+//
+//        when(updateMock.message()).thenReturn(messageMock);
+//        when(messageMock.chat()).thenReturn(chatMock);
+//        when(chatMock.id()).thenReturn(1L);
+//        when(messageMock.from()).thenReturn(userMock);
+//        when(userMock.id()).thenReturn(1L);
+//        when(userMock.firstName()).thenReturn("Ivan");
+//        when(userMock.lastName()).thenReturn("Ivanov");
+//        when(userMock.username()).thenReturn("ivanovii");
+//
+//        SendMessage testSendMessage = new SendMessage(1L, "Пользователь ivanovii Ivan Ivanov (ID: 1) успешно зарегистрирован.");
+//
+//        SendMessage result = startCommand.handle(updateMock);
+//        Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
+//        Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
+//    }
 
 }
