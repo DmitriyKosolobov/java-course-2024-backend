@@ -5,9 +5,7 @@ import edu.java.scrapper.domain.jooq.JooqLinkRepository;
 import edu.java.scrapper.service.LinkUpdater;
 import java.util.Collection;
 import java.util.List;
-import org.springframework.stereotype.Service;
 
-@Service
 public class JooqLinkUpdater implements LinkUpdater {
 
     private final JooqLinkRepository jooqLinkRepository;

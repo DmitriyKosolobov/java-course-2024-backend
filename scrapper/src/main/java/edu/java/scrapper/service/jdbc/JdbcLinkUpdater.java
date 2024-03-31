@@ -5,9 +5,7 @@ import edu.java.scrapper.domain.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.service.LinkUpdater;
 import java.util.Collection;
 import java.util.List;
-import org.springframework.stereotype.Service;
 
-@Service
 public class JdbcLinkUpdater implements LinkUpdater {
 
     private final JdbcLinkRepository jdbcLinkRepository;

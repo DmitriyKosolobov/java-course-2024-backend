@@ -1,6 +1,5 @@
 package edu.java.scrapper.controller.dto;
 
-
 import jakarta.validation.constraints.Pattern;
 
 @SuppressWarnings("LineLength")

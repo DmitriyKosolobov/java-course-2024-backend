@@ -1,5 +1,6 @@
 package edu.java.scrapper.configuration;
 
+import edu.java.scrapper.enums.AccessType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +13,8 @@ public record ApplicationConfig(
     @Bean
     @NotNull
     Scheduler scheduler,
-    BaseUrls urls
+    BaseUrls urls,
+    AccessType databaseAccessType
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
