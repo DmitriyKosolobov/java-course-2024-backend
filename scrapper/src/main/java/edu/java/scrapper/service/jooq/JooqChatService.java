@@ -5,9 +5,7 @@ import edu.java.scrapper.exception.ExistChatException;
 import edu.java.scrapper.exception.NotFoundChatException;
 import edu.java.scrapper.service.ChatService;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
 
-@Service
 public class JooqChatService implements ChatService {
 
     private final JooqChatRepository jooqChatRepository;

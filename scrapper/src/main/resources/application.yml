@@ -3,10 +3,10 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10
-
   urls:
     gitHubBaseUrl: https://api.github.com/
     stackOverflowBaseUrl: https://api.stackexchange.com/
+  database-access-type: jpa
 
 bot:
   api:
