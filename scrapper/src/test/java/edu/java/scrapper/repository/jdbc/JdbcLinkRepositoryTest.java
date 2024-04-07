@@ -4,11 +4,13 @@ import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.domain.jdbc.JdbcChatRepository;
 import edu.java.scrapper.domain.jdbc.JdbcLinkRepository;
+import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,9 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
 
     @Autowired
     private JdbcLinkRepository jdbcLinkRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     @Transactional
@@ -100,6 +105,63 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         Assertions.assertEquals(url1, links.getFirst().url());
         Assertions.assertEquals(url2, links.getLast().url());
         Assertions.assertEquals(0, emptyList.size());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findOldCheckedLinksTest() {
+        String url1 = "https://github.com/dashboard";
+        String url2 = "https://stackoverflow.com/";
+
+        jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
+            1L, url2,OffsetDateTime.now(), 0L, 0L);
+        jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
+            2L, url1,OffsetDateTime.now().minusSeconds(6L), 0L, 0L);
+
+        List<Link> links = jdbcLinkRepository.findOldCheckedLinks(5L);
+
+        Assertions.assertEquals(1, links.size());
+        Assertions.assertEquals(url1, links.getFirst().url());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void updateLastCheckTimeTest() {
+        String url = "https://github.com/dashboard";
+
+        OffsetDateTime dataTime = OffsetDateTime.now().minusSeconds(5L);
+
+        jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
+            1L, url,dataTime, 0L, 0L);
+
+        int res = jdbcLinkRepository.updateLastCheckTime(1L);
+
+        List<Link> links = jdbcLinkRepository.findAll();
+
+        Assertions.assertEquals(1,res);
+        Assertions.assertTrue(links.getFirst().lastCheckTime().isAfter(dataTime));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findAllTgChatIdByLinkIdTest() {
+        Long chatId1 = jdbcChatRepository.add(5L).id();
+        String url1 = "https://stackoverflow.com/";
+        String url2 = "https://github.com/dashboard";
+        jdbcLinkRepository.add(chatId1, url1);
+        jdbcLinkRepository.add(chatId1, url2);
+
+        Long chatId2 = jdbcChatRepository.add(9L).id();
+        Long linkId = jdbcLinkRepository.add(chatId2, url1).id();
+
+        List<Long> tgChatIds = jdbcLinkRepository.findAllTgChatIdByLinkId(linkId);
+
+        Assertions.assertEquals(2, tgChatIds.size());
+        Assertions.assertEquals(5L,tgChatIds.getFirst());
+        Assertions.assertEquals(9L,tgChatIds.getLast());
     }
 
 }

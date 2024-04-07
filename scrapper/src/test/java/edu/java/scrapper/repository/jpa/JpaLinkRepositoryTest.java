@@ -5,6 +5,7 @@ import edu.java.scrapper.domain.jpa.JpaChatRepository;
 import edu.java.scrapper.domain.jpa.JpaLinkRepository;
 import edu.java.scrapper.domain.jpa.entity.Chat;
 import edu.java.scrapper.domain.jpa.entity.Link;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -91,6 +92,29 @@ public class JpaLinkRepositoryTest extends IntegrationTest {
 
         Assertions.assertTrue(optionalLink.isPresent());
         Assertions.assertEquals("https://github.com/dashboard", optionalLink.get().getUrl());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findOldCheckedLinks() {
+        String url1 = "https://github.com/dashboard";
+        String url2 = "https://stackoverflow.com/";
+
+        Chat chat = jpaChatRepository.save(new Chat(5L));
+        Link link1 = new Link(url1,chat);
+        Link link2 = new Link(url2,chat);
+
+        link1.setLastCheckTime(OffsetDateTime.now().minusSeconds(6L));
+        link2.setLastCheckTime(OffsetDateTime.now());
+
+        jpaLinkRepository.save(link1);
+        jpaLinkRepository.save(link2);
+
+        List<Link> links = jpaLinkRepository.findOldCheckedLinks(5L);
+
+        Assertions.assertEquals(1, links.size());
+        Assertions.assertEquals(url1, links.getFirst().getUrl());
     }
 
 }

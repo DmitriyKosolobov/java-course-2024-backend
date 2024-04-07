@@ -6,7 +6,6 @@ import edu.java.scrapper.exception.ExistChatException;
 import edu.java.scrapper.exception.NotFoundChatException;
 import edu.java.scrapper.service.ChatService;
 import java.util.Optional;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class JpaChatService implements ChatService {
@@ -23,7 +22,7 @@ public class JpaChatService implements ChatService {
         try {
             Chat chat = new Chat(tgChatId);
             jpaChatRepository.save(chat);
-        } catch (DuplicateKeyException e) {
+        } catch (Exception e) {
             throw new ExistChatException();
         }
     }
