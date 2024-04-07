@@ -4,13 +4,17 @@ import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.domain.dto.Link;
 import edu.java.scrapper.domain.jooq.JooqChatRepository;
 import edu.java.scrapper.domain.jooq.JooqLinkRepository;
+import java.time.OffsetDateTime;
 import java.util.List;
+import org.jooq.DSLContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import static edu.java.scrapper.domain.jooq.Tables.LINKS;
 
 @SpringBootTest
 public class JooqLinkRepositoryTest extends IntegrationTest {
@@ -20,6 +24,9 @@ public class JooqLinkRepositoryTest extends IntegrationTest {
 
     @Autowired
     private JooqLinkRepository jooqLinkRepository;
+
+    @Autowired
+    private DSLContext dslContext;
 
     @Test
     @Transactional
@@ -104,4 +111,60 @@ public class JooqLinkRepositoryTest extends IntegrationTest {
         Assertions.assertEquals(0, emptyList.size());
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    void findOldCheckedLinksTest() {
+        String url1 = "https://github.com/dashboard";
+        String url2 = "https://stackoverflow.com/";
+
+        dslContext.insertInto(LINKS).values(1L, url2, OffsetDateTime.now(), 0L, 0L).returning(LINKS.ID).fetchOne();
+        dslContext.insertInto(LINKS).values(2L, url1,OffsetDateTime.now().minusSeconds(6L), 0L, 0L).returning(LINKS.ID).fetchOne();
+
+        List<Link> links1 = jooqLinkRepository.findAll();
+        System.out.println(links1);
+
+        List<Link> links = jooqLinkRepository.findOldCheckedLinks(5L);
+
+        Assertions.assertEquals(1, links.size());
+        Assertions.assertEquals(url1, links.getFirst().url());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void updateLastCheckTimeTest() {
+        String url = "https://github.com/dashboard";
+
+        OffsetDateTime dataTime = OffsetDateTime.now().minusSeconds(5L);
+
+        dslContext.insertInto(LINKS).values(1L, url,dataTime, 0L, 0L).returning(LINKS.ID).fetchOne();
+
+        int res = jooqLinkRepository.updateLastCheckTime(1L);
+
+        List<Link> links = jooqLinkRepository.findAll();
+
+        Assertions.assertEquals(1,res);
+        Assertions.assertTrue(links.getFirst().lastCheckTime().isAfter(dataTime));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findAllTgChatIdByLinkIdTest() {
+        Long chatId1 = jooqChatRepository.add(5L).id();
+        String url1 = "https://stackoverflow.com/";
+        String url2 = "https://github.com/dashboard";
+        jooqLinkRepository.add(chatId1, url1);
+        jooqLinkRepository.add(chatId1, url2);
+
+        Long chatId2 = jooqChatRepository.add(9L).id();
+        Long linkId = jooqLinkRepository.add(chatId2, url1).id();
+
+        List<Long> tgChatIds = jooqLinkRepository.findAllTgChatIdByLinkId(linkId);
+
+        Assertions.assertEquals(2, tgChatIds.size());
+        Assertions.assertEquals(5L,tgChatIds.getFirst());
+        Assertions.assertEquals(9L,tgChatIds.getLast());
+    }
 }
