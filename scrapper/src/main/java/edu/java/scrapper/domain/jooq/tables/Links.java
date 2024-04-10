@@ -63,7 +63,8 @@ public class Links extends TableImpl<LinksRecord> {
     /**
      * The column <code>LINKS.LAST_CHECK_TIME</code>.
      */
-    public final TableField<LinksRecord, OffsetDateTime> LAST_CHECK_TIME = createField(DSL.name("LAST_CHECK_TIME"),
+    public final TableField<LinksRecord, OffsetDateTime> LAST_CHECK_TIME = createField(
+        DSL.name("LAST_CHECK_TIME"),
         SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false)
             .defaultValue(DSL.field(DSL.raw("LOCALTIMESTAMP"), SQLDataType.TIMESTAMPWITHTIMEZONE)),
         this,
@@ -72,7 +73,8 @@ public class Links extends TableImpl<LinksRecord> {
     /**
      * The column <code>LINKS.ANSWERS_COUNT</code>.
      */
-    public final TableField<LinksRecord, Long> ANSWERS_COUNT = createField(DSL.name("ANSWERS_COUNT"),
+    public final TableField<LinksRecord, Long> ANSWERS_COUNT = createField(
+        DSL.name("ANSWERS_COUNT"),
         SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.BIGINT)),
         this,
         ""
@@ -80,7 +82,8 @@ public class Links extends TableImpl<LinksRecord> {
     /**
      * The column <code>LINKS.COMMITS_COUNT</code>.
      */
-    public final TableField<LinksRecord, Long> COMMITS_COUNT = createField(DSL.name("COMMITS_COUNT"),
+    public final TableField<LinksRecord, Long> COMMITS_COUNT = createField(
+        DSL.name("COMMITS_COUNT"),
         SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.BIGINT)),
         this,
         ""

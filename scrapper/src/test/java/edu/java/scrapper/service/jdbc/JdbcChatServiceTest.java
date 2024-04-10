@@ -16,18 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 public class JdbcChatServiceTest extends IntegrationTest {
 
-    @DynamicPropertySource
-    public static void setJdbcAccessType(DynamicPropertyRegistry registry){
-        registry.add("app.database-access-type", () -> "jdbc");
-    }
-
     @Autowired
     private ChatService chatService;
+
+    @DynamicPropertySource
+    public static void setJdbcAccessType(DynamicPropertyRegistry registry) {
+        registry.add("app.database-access-type", () -> "jdbc");
+    }
 
     @Test
     @Transactional
     @Rollback
-    void registerTest(){
+    void registerTest() {
 
         Assertions.assertDoesNotThrow(() -> {
             chatService.register(5L);
@@ -41,7 +41,7 @@ public class JdbcChatServiceTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    void unregisterTest(){
+    void unregisterTest() {
 
         Assertions.assertDoesNotThrow(() -> {
             chatService.register(5L);

@@ -3,10 +3,9 @@ package edu.java.scrapper.client;
 import edu.java.scrapper.client.dto.StackOverflowAnswerResponse;
 import edu.java.scrapper.client.dto.StackOverflowQuestionResponse;
 import edu.java.scrapper.configuration.ApplicationConfig;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Component
+//@Component
 public class StackOverflowClientImpl implements StackOverflowClient {
 
     private final WebClient webClient;

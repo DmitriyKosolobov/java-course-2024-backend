@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static edu.java.scrapper.domain.jooq.Tables.LINKS;
@@ -119,7 +118,8 @@ public class JooqLinkRepositoryTest extends IntegrationTest {
         String url2 = "https://stackoverflow.com/";
 
         dslContext.insertInto(LINKS).values(1L, url2, OffsetDateTime.now(), 0L, 0L).returning(LINKS.ID).fetchOne();
-        dslContext.insertInto(LINKS).values(2L, url1,OffsetDateTime.now().minusSeconds(6L), 0L, 0L).returning(LINKS.ID).fetchOne();
+        dslContext.insertInto(LINKS).values(2L, url1, OffsetDateTime.now().minusSeconds(6L), 0L, 0L).returning(LINKS.ID)
+            .fetchOne();
 
         List<Link> links1 = jooqLinkRepository.findAll();
         System.out.println(links1);
@@ -138,13 +138,13 @@ public class JooqLinkRepositoryTest extends IntegrationTest {
 
         OffsetDateTime dataTime = OffsetDateTime.now().minusSeconds(5L);
 
-        dslContext.insertInto(LINKS).values(1L, url,dataTime, 0L, 0L).returning(LINKS.ID).fetchOne();
+        dslContext.insertInto(LINKS).values(1L, url, dataTime, 0L, 0L).returning(LINKS.ID).fetchOne();
 
         int res = jooqLinkRepository.updateLastCheckTime(1L);
 
         List<Link> links = jooqLinkRepository.findAll();
 
-        Assertions.assertEquals(1,res);
+        Assertions.assertEquals(1, res);
         Assertions.assertTrue(links.getFirst().lastCheckTime().isAfter(dataTime));
     }
 
@@ -164,7 +164,7 @@ public class JooqLinkRepositoryTest extends IntegrationTest {
         List<Long> tgChatIds = jooqLinkRepository.findAllTgChatIdByLinkId(linkId);
 
         Assertions.assertEquals(2, tgChatIds.size());
-        Assertions.assertEquals(5L,tgChatIds.getFirst());
-        Assertions.assertEquals(9L,tgChatIds.getLast());
+        Assertions.assertEquals(5L, tgChatIds.getFirst());
+        Assertions.assertEquals(9L, tgChatIds.getLast());
     }
 }

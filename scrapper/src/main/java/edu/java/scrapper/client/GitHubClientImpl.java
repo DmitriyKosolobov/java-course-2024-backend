@@ -5,10 +5,10 @@ import edu.java.scrapper.client.dto.GitHubRepositoryResponse;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.springframework.stereotype.Component;
+import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Component
+//@Component
 public class GitHubClientImpl implements GitHubClient {
 
     private final WebClient webClient;
@@ -29,18 +29,18 @@ public class GitHubClientImpl implements GitHubClient {
     }
 
     @Override
-    public GitHubCommitResponse fetchCommit(String owner, String repo) {
+    public List<GitHubCommitResponse> fetchCommit(String owner, String repo) {
         try {
-            GitHubCommitResponse.GitHubCommitItem[] commits = webClient.get()
+            GitHubCommitResponse[] commits = webClient.get()
                 .uri("repos/{owner}/{repo}/commits", owner, repo)
                 .retrieve()
-                .bodyToMono(GitHubCommitResponse.GitHubCommitItem[].class)
+                .bodyToMono(GitHubCommitResponse[].class)
                 .block();
 
-            return new GitHubCommitResponse(Arrays.stream(commits).toList());
+            return Arrays.stream(commits).toList();
 
         } catch (Exception ex) {
-            return new GitHubCommitResponse(new ArrayList<>(0));
+            return new ArrayList<>(0);
         }
     }
 }

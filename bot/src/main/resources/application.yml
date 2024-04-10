@@ -1,5 +1,7 @@
 app:
   telegram-token: ${TOKEN}
+  back-off: constant
+  retry-codes: 500, 400, 404
 
 scrapper:
   api:
