@@ -1,25 +1,24 @@
 package serviceTests.commandTests;
 
 import com.pengrad.telegrambot.model.BotCommand;
+import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.service.command.Command;
+import edu.java.bot.service.command.HelpCommand;
 import edu.java.bot.service.command.ListCommand;
 import edu.java.bot.service.command.StartCommand;
 import edu.java.bot.service.command.TrackCommand;
 import edu.java.bot.service.command.UntrackCommand;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
-import com.pengrad.telegrambot.model.Chat;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.service.command.HelpCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import java.util.ArrayList;
-import java.util.List;
 import static org.mockito.Mockito.when;
-
 
 public class HelpCommandTest {
 
@@ -37,20 +36,20 @@ public class HelpCommandTest {
 
     @Test
     @DisplayName("Проверка метода toApiCommand")
-    public void toApiCommandTest(){
+    public void toApiCommandTest() {
         BotCommand botCommandMock = Mockito.mock(BotCommand.class);
 
         when(botCommandMock.command()).thenReturn("/help");
         when(botCommandMock.description()).thenReturn("Вывести окно с командами");
 
         BotCommand result = helpCommand.toApiCommand();
-        Assertions.assertEquals(botCommandMock.command(),result.command());
-        Assertions.assertEquals(botCommandMock.description(),result.description());
+        Assertions.assertEquals(botCommandMock.command(), result.command());
+        Assertions.assertEquals(botCommandMock.description(), result.description());
     }
 
     @Test
     @DisplayName("Проверка метода supports c корретной командой")
-    public void supportsTest1(){
+    public void supportsTest1() {
         Update updateMock = Mockito.mock(Update.class);
         Message messageMock = Mockito.mock(Message.class);
 
@@ -63,7 +62,7 @@ public class HelpCommandTest {
 
     @Test
     @DisplayName("Проверка метода supports c НЕкорретной командой")
-    public void supportsTest2(){
+    public void supportsTest2() {
         Update updateMock = Mockito.mock(Update.class);
         Message messageMock = Mockito.mock(Message.class);
 
@@ -76,7 +75,7 @@ public class HelpCommandTest {
 
     @Test
     @DisplayName("Проверка метода supports с пустым полем message")
-    public void supportsTest3(){
+    public void supportsTest3() {
         Update updateMock = Mockito.mock(Update.class);
 
         boolean result = helpCommand.supports(updateMock);
@@ -85,7 +84,7 @@ public class HelpCommandTest {
 
     @Test
     @DisplayName("Проверка метода supports с пустым полем text")
-    public void supportsTest4(){
+    public void supportsTest4() {
         Update updateMock = Mockito.mock(Update.class);
         Message messageMock = Mockito.mock(Message.class);
 
@@ -97,7 +96,7 @@ public class HelpCommandTest {
 
     @Test
     @DisplayName("Проверка метода handle")
-    public void handleTest(){
+    public void handleTest() {
         Update updateMock = Mockito.mock(Update.class);
         Message messageMock = Mockito.mock(Message.class);
         Chat chatMock = Mockito.mock(Chat.class);
@@ -107,16 +106,16 @@ public class HelpCommandTest {
         when(chatMock.id()).thenReturn(1L);
 
         SendMessage testSendMessage = new SendMessage(1L, """
-                Список доступных команд:
-                /help - Вывести окно с командами
-                /start - Зарегистрировать пользователя
-                /track - Начать отслеживание ссылки
-                /untrack - Прекратить отслеживание ссылки
-                /list - Показать список отслеживаемых ссылок""");
+            Список доступных команд:
+            /help - Вывести окно с командами
+            /start - Зарегистрировать пользователя
+            /track - Начать отслеживание ссылки
+            /untrack - Прекратить отслеживание ссылки
+            /list - Показать список отслеживаемых ссылок""");
 
         SendMessage result = helpCommand.handle(updateMock);
-        Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"),result.getParameters().get("chat_id"));
-        Assertions.assertEquals(testSendMessage.getParameters().get("text"),result.getParameters().get("text"));
+        Assertions.assertEquals(testSendMessage.getParameters().get("chat_id"), result.getParameters().get("chat_id"));
+        Assertions.assertEquals(testSendMessage.getParameters().get("text"), result.getParameters().get("text"));
     }
 
 }

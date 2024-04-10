@@ -11,12 +11,14 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "links")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Link {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +38,6 @@ public class Link {
 
     @ManyToMany(mappedBy = "links")
     private List<Chat> chats = new ArrayList<>();
-
 
     public Link(String url, Chat chat) {
         this.url = url;

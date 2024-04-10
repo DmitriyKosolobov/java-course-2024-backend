@@ -95,10 +95,14 @@ public class StackOverflowClientTest {
         verify(getRequestedFor(urlEqualTo("/2.3/questions/1/answers?order=desc&sort=activity&site=stackoverflow")));
         assertNotNull(response);
         assertEquals(2, response.items().size());
-        assertEquals(Instant.ofEpochSecond(1711201928).atOffset(ZoneOffset.UTC),
-            response.items().getFirst().creationDate());
-        assertEquals(Instant.ofEpochSecond(1711201929).atOffset(ZoneOffset.UTC),
-            response.items().getLast().creationDate());
+        assertEquals(
+            Instant.ofEpochSecond(1711201928).atOffset(ZoneOffset.UTC),
+            response.items().getFirst().creationDate()
+        );
+        assertEquals(
+            Instant.ofEpochSecond(1711201929).atOffset(ZoneOffset.UTC),
+            response.items().getLast().creationDate()
+        );
     }
 
     @Test

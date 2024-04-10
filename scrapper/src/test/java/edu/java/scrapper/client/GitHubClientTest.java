@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.dto.GitHubCommitResponse;
 import edu.java.scrapper.client.dto.GitHubRepositoryResponse;
 import edu.java.scrapper.configuration.ApplicationConfig;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -79,15 +80,15 @@ public class GitHubClientTest {
 
         GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock);
 
-        GitHubCommitResponse response = gitHubClient.fetchCommit("owner", "repo");
+        List<GitHubCommitResponse> response = gitHubClient.fetchCommit("owner", "repo");
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo/commits")));
         assertNotNull(response);
-        assertEquals(2, response.items().size());
-        assertEquals("b6bbc5890aab5f926bfeaaf2ca55cf5f94955651", response.items().getFirst().sha());
-        assertEquals("Commit №2", response.items().getFirst().commit().message());
-        assertEquals("dab38bdeec3c19718964cb7525ef79f9cd9c3289", response.items().getLast().sha());
-        assertEquals("Commit №1", response.items().getLast().commit().message());
+        assertEquals(2, response.size());
+        assertEquals("b6bbc5890aab5f926bfeaaf2ca55cf5f94955651", response.getFirst().sha());
+        assertEquals("Commit №2", response.getFirst().commit().message());
+        assertEquals("dab38bdeec3c19718964cb7525ef79f9cd9c3289", response.getLast().sha());
+        assertEquals("Commit №1", response.getLast().commit().message());
     }
 
     @Test
@@ -111,11 +112,11 @@ public class GitHubClientTest {
 
         GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock);
 
-        GitHubCommitResponse response = gitHubClient.fetchCommit("owner", "repo");
+        List<GitHubCommitResponse> response = gitHubClient.fetchCommit("owner", "repo");
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo/commits")));
         assertNotNull(response);
-        assertEquals(0, response.items().size());
+        assertEquals(0, response.size());
     }
 
 }

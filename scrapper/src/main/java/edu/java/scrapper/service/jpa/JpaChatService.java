@@ -19,10 +19,11 @@ public class JpaChatService implements ChatService {
     @Override
     @Transactional
     public void register(Long tgChatId) throws ExistChatException {
-        try {
+        Optional<Chat> optionalChat = jpaChatRepository.findByTgChatId(tgChatId);
+        if (optionalChat.isEmpty()) {
             Chat chat = new Chat(tgChatId);
             jpaChatRepository.save(chat);
-        } catch (Exception e) {
+        } else {
             throw new ExistChatException();
         }
     }

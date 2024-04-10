@@ -7,6 +7,8 @@ import edu.java.scrapper.exception.NotFoundChatException;
 import edu.java.scrapper.exception.NotFoundLinkException;
 import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
+import java.net.URI;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,27 +17,24 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
-import java.net.URI;
-import java.util.List;
 
 @SpringBootTest
 public class JpaLinkServiceTest extends IntegrationTest {
 
-    @DynamicPropertySource
-    public static void setJdbcAccessType(DynamicPropertyRegistry registry){
-        registry.add("app.database-access-type", () -> "jpa");
-    }
-
     @Autowired
     private ChatService chatService;
-
     @Autowired
     private LinkService linkService;
+
+    @DynamicPropertySource
+    public static void setJdbcAccessType(DynamicPropertyRegistry registry) {
+        registry.add("app.database-access-type", () -> "jpa");
+    }
 
     @Test
     @Transactional
     @Rollback
-    void addTest(){
+    void addTest() {
         Assertions.assertThrows(NotFoundChatException.class, () -> {
             linkService.add(5L, URI.create("https://github.com/dashboard"));
         });
@@ -57,7 +56,7 @@ public class JpaLinkServiceTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    void removeTest(){
+    void removeTest() {
         Assertions.assertThrows(NotFoundChatException.class, () -> {
             linkService.remove(5L, URI.create("https://github.com/dashboard"));
         });
@@ -79,7 +78,7 @@ public class JpaLinkServiceTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    void listAllTest(){
+    void listAllTest() {
         Assertions.assertThrows(NotFoundChatException.class, () -> {
             linkService.listAll(5L);
         });
@@ -94,9 +93,9 @@ public class JpaLinkServiceTest extends IntegrationTest {
 
         Assertions.assertDoesNotThrow(() -> {
             List<Link> linkList = (List<Link>) linkService.listAll(5L);
-            Assertions.assertEquals(2,linkList.size());
-            Assertions.assertEquals("https://github.com/dashboard",linkList.getFirst().url());
-            Assertions.assertEquals("https://stackoverflow.com/",linkList.getLast().url());
+            Assertions.assertEquals(2, linkList.size());
+            Assertions.assertEquals("https://github.com/dashboard", linkList.getFirst().url());
+            Assertions.assertEquals("https://stackoverflow.com/", linkList.getLast().url());
         });
     }
 

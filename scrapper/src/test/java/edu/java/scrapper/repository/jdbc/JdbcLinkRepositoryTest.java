@@ -115,9 +115,19 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         String url2 = "https://stackoverflow.com/";
 
         jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
-            1L, url2,OffsetDateTime.now(), 0L, 0L);
+            1L,
+            url2,
+            OffsetDateTime.now(),
+            0L,
+            0L
+        );
         jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
-            2L, url1,OffsetDateTime.now().minusSeconds(6L), 0L, 0L);
+            2L,
+            url1,
+            OffsetDateTime.now().minusSeconds(6L),
+            0L,
+            0L
+        );
 
         List<Link> links = jdbcLinkRepository.findOldCheckedLinks(5L);
 
@@ -134,13 +144,18 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         OffsetDateTime dataTime = OffsetDateTime.now().minusSeconds(5L);
 
         jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
-            1L, url,dataTime, 0L, 0L);
+            1L,
+            url,
+            dataTime,
+            0L,
+            0L
+        );
 
         int res = jdbcLinkRepository.updateLastCheckTime(1L);
 
         List<Link> links = jdbcLinkRepository.findAll();
 
-        Assertions.assertEquals(1,res);
+        Assertions.assertEquals(1, res);
         Assertions.assertTrue(links.getFirst().lastCheckTime().isAfter(dataTime));
     }
 
@@ -160,8 +175,8 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         List<Long> tgChatIds = jdbcLinkRepository.findAllTgChatIdByLinkId(linkId);
 
         Assertions.assertEquals(2, tgChatIds.size());
-        Assertions.assertEquals(5L,tgChatIds.getFirst());
-        Assertions.assertEquals(9L,tgChatIds.getLast());
+        Assertions.assertEquals(5L, tgChatIds.getFirst());
+        Assertions.assertEquals(9L, tgChatIds.getLast());
     }
 
 }

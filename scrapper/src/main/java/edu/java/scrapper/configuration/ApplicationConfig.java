@@ -1,8 +1,10 @@
 package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.enums.AccessType;
+import edu.java.scrapper.enums.BackOffType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
+import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
@@ -14,7 +16,9 @@ public record ApplicationConfig(
     @NotNull
     Scheduler scheduler,
     BaseUrls urls,
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+    BackOffType backOff,
+    List<Integer> retryCodes
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }

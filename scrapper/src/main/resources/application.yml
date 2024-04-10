@@ -7,6 +7,8 @@ app:
     gitHubBaseUrl: https://api.github.com/
     stackOverflowBaseUrl: https://api.stackexchange.com/
   database-access-type: jpa
+  back-off: constant
+  retry-codes: 500, 400, 404
 
 bot:
   api:

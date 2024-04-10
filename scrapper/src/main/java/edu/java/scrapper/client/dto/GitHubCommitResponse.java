@@ -1,18 +1,12 @@
 package edu.java.scrapper.client.dto;
 
-import java.util.List;
-
 public record GitHubCommitResponse(
-    List<GitHubCommitItem> items
+    String sha,
+    Commit commit
 ) {
-    public record GitHubCommitItem(
-        String sha,
-        Commit commit
+    public record Commit(
+        String message
     ) {
-        public record Commit(
-            String message
-        ) {
-        }
     }
 }
 
