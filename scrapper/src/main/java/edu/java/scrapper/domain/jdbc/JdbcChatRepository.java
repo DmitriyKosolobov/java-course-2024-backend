@@ -10,15 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class JdbcChatRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final ChatRowMapper chatRowMapper;
 
-    public JdbcChatRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcChatRepository(JdbcTemplate jdbcTemplate, ChatRowMapper chatRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.chatRowMapper = chatRowMapper;
     }
 
     public List<Chat> findAll() {
         String sql = "SELECT id, tg_chat_id FROM chats";
-        return jdbcTemplate.query(sql, (row, item) ->
-            new Chat(row.getLong("id"), row.getLong("tg_chat_id")));
+        return jdbcTemplate.query(sql, chatRowMapper);
     }
 
     public Long getChatIdByTgChatId(Long tgChatId) {
