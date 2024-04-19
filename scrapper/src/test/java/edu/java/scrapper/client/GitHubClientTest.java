@@ -1,9 +1,9 @@
 package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.client.GitHubClientImpl;
-import edu.java.client.dto.GitHubRepositoryResponse;
-import edu.java.configuration.ApplicationConfig;
+import edu.java.scrapper.client.dto.GitHubCommitResponse;
+import edu.java.scrapper.client.dto.GitHubRepositoryResponse;
+import edu.java.scrapper.configuration.ApplicationConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 public class GitHubClientTest {
 
     @Test
-    @DisplayName("Проверка клиента GitHub")
-    public void gitHubClientTest() {
+    @DisplayName("Получение информации о репозитории")
+    public void gitHubClientRepositoryTest() {
 
         stubFor(get(urlPathMatching("/repos/owner/repo"))
             .willReturn(aResponse()
@@ -43,10 +43,79 @@ public class GitHubClientTest {
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo")));
         assertNotNull(response);
-        assertEquals(1L,response.getId());
-        assertEquals("repo",response.getName());
-        assertEquals("2024-01-26T19:16:51Z",response.getPushedAt().toString());
-        assertEquals("2024-01-26T19:18:01Z",response.getUpdatedAt().toString());
+        assertEquals(1L,response.id());
+        assertEquals("repo",response.name());
+        assertEquals("2024-01-26T19:16:51Z",response.pushedAt().toString());
+        assertEquals("2024-01-26T19:18:01Z",response.updatedAt().toString());
+    }
+
+    @Test
+    @DisplayName("Получение информации о коммитах")
+    public void gitHubClientCommitTest() {
+
+        stubFor(get(urlPathMatching("/repos/owner/repo/commits"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody("""
+                        [
+                          {
+                            "sha": "b6bbc5890aab5f926bfeaaf2ca55cf5f94955651",
+                            "commit": {
+                              "message": "Commit №2"
+                              }
+                          },
+                          {
+                            "sha": "dab38bdeec3c19718964cb7525ef79f9cd9c3289",
+                            "commit": {
+                              "message": "Commit №1"
+                            }
+                          }]""")));
+
+        ApplicationConfig applicationConfigMock = Mockito.mock(ApplicationConfig.class);
+        ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
+        when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
+        when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
+
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock);
+
+        GitHubCommitResponse response = gitHubClient.fetchCommit("owner", "repo");
+
+        verify(getRequestedFor(urlEqualTo("/repos/owner/repo/commits")));
+        assertNotNull(response);
+        assertEquals(2,response.items().size());
+        assertEquals("b6bbc5890aab5f926bfeaaf2ca55cf5f94955651",response.items().getFirst().sha());
+        assertEquals("Commit №2",response.items().getFirst().commit().message());
+        assertEquals("dab38bdeec3c19718964cb7525ef79f9cd9c3289",response.items().getLast().sha());
+        assertEquals("Commit №1",response.items().getLast().commit().message());
+    }
+
+    @Test
+    @DisplayName("Получение информации о последнем коммите, когда нет коммитов")
+    public void gitHubClientNoCommitTest() {
+
+        stubFor(get(urlPathMatching("/repos/owner/repo/commits"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody("""
+                        {
+                          "message": "Git Repository is empty.",
+                          "documentation_url": "https://docs.github.com/rest/commits/commits#list-commits"
+                        }""")));
+
+        ApplicationConfig applicationConfigMock = Mockito.mock(ApplicationConfig.class);
+        ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
+        when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
+        when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
+
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock);
+
+        GitHubCommitResponse response = gitHubClient.fetchCommit("owner", "repo");
+
+        verify(getRequestedFor(urlEqualTo("/repos/owner/repo/commits")));
+        assertNotNull(response);
+        assertEquals(0,response.items().size());
     }
 
 }
