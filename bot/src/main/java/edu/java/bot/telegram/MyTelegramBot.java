@@ -11,6 +11,8 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.service.UserMessageProcessor;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
@@ -64,6 +66,7 @@ public class MyTelegramBot implements Bot {
                 e.response().description();
             }
         });
+        Metrics.addRegistry(new SimpleMeterRegistry());
     }
 
     @Override
