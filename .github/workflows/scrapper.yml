@@ -61,7 +61,7 @@ jobs:
           context: .
           file: ./scrapper.Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ghcr.io/dmitriykosolobov/scrapper:latest
 
   checkstyle:
     name: checkstyle

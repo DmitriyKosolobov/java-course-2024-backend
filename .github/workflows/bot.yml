@@ -62,7 +62,7 @@ jobs:
           context: .
           file: ./bot.Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ghcr.io/dmitriykosolobov/bot:latest
 
   checkstyle:
     name: checkstyle
