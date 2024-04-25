@@ -13,8 +13,10 @@ import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.service.UserMessageProcessor;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
+@Log4j2
 @Component
 public class MyTelegramBot implements Bot {
     private final UserMessageProcessor messageProcessor;
@@ -32,7 +34,7 @@ public class MyTelegramBot implements Bot {
         if (request instanceof SendMessage sendMessageRequest) {
             SendResponse sendResponse = bot.execute(sendMessageRequest);
             if (!sendResponse.isOk()) {
-                //Добавить логгирование
+                log.info(sendResponse.description());
             }
         }
     }

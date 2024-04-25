@@ -12,7 +12,6 @@ import edu.java.scrapper.service.LinkService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +26,7 @@ public class LinkController {
 
     private final LinkService linkService;
 
-    public LinkController(@Qualifier("jdbcLinkService") LinkService linkService) {
+    public LinkController(LinkService linkService) {
         this.linkService = linkService;
     }
 

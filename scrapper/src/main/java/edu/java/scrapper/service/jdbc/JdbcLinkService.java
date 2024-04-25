@@ -9,9 +9,7 @@ import edu.java.scrapper.exception.NotFoundLinkException;
 import edu.java.scrapper.service.LinkService;
 import java.net.URI;
 import java.util.Collection;
-import org.springframework.stereotype.Service;
 
-@Service
 public class JdbcLinkService implements LinkService {
 
     private final JdbcLinkRepository jdbcLinkRepository;

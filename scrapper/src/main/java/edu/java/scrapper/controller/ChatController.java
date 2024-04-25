@@ -3,7 +3,6 @@ package edu.java.scrapper.controller;
 import edu.java.scrapper.exception.ExistChatException;
 import edu.java.scrapper.exception.NotFoundChatException;
 import edu.java.scrapper.service.ChatService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +15,7 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    public ChatController(@Qualifier("jdbcChatService") ChatService chatService) {
+    public ChatController(ChatService chatService) {
         this.chatService = chatService;
     }
 

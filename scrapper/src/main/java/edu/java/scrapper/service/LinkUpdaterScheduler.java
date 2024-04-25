@@ -13,7 +13,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class LinkUpdaterScheduler {
     private Long forceCheckDelay;
 
     public LinkUpdaterScheduler(
-        @Qualifier("jdbcLinkUpdater") LinkUpdater linkUpdater, GitHubClient gitHubClient,
+        LinkUpdater linkUpdater, GitHubClient gitHubClient,
         StackOverflowClient stackOverflowClient, BotClient botClient
     ) {
         this.linkUpdater = linkUpdater;
@@ -67,39 +66,59 @@ public class LinkUpdaterScheduler {
         String[] path = url.getPath().split("/");
         String owner = path[1];
         String repo = path[2];
-        GitHubRepositoryResponse repository = gitHubClient.fetchRepository(owner, repo);
-        if (link.lastCheckTime().isBefore(repository.pushedAt())
-            || link.lastCheckTime().isBefore(repository.updatedAt())) {
 
-            String description = "Обновление в репозитории";
-            linkUpdater.update(link.id());
+        try {
+            GitHubRepositoryResponse repository = gitHubClient.fetchRepository(owner, repo);
+            if (link.lastCheckTime().isBefore(repository.pushedAt())
+                || link.lastCheckTime().isBefore(repository.updatedAt())) {
 
-            GitHubCommitResponse commits = gitHubClient.fetchCommit(owner, repo);
-            if (commits.items().size() != link.commitsCount()) {
-                description += (": новый коммит\n" + commits.items().getFirst().commit().message());
+                String description = "(обновление в репозитории)\n";
+                linkUpdater.update(link.id());
+
+                try {
+                    GitHubCommitResponse commits = gitHubClient.fetchCommit(owner, repo);
+                    if (commits.items().size() != link.commitsCount()) {
+                        description += ("Новый коммит: " + commits.items().getFirst().commit().message());
+                    }
+                } catch (Exception e) {
+                    log.info(e.getMessage());
+                }
+
+                List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
+                sendBotUpdates(link, description, tgChatIds);
             }
 
-            List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
-            sendBotUpdates(link, description, tgChatIds);
+        } catch (Exception e) {
+            log.info(e.getMessage());
         }
     }
 
     private void stackOverflowHandler(Link link, URI url) {
         Long questionId = Long.parseLong(url.getPath().split("/")[2]);
-        StackOverflowQuestionResponse.StackOverflowQuestionItem res =
-            stackOverflowClient.fetchQuestion(questionId).items().getFirst();
-        if (link.lastCheckTime().isBefore(res.lastActivityDate())) {
 
-            String description = "Новая информация по вопросу";
-            linkUpdater.update(link.id());
+        try {
+            StackOverflowQuestionResponse.StackOverflowQuestionItem res =
+                stackOverflowClient.fetchQuestion(questionId).items().getFirst();
+            if (link.lastCheckTime().isBefore(res.lastActivityDate())) {
 
-            StackOverflowAnswerResponse answers = stackOverflowClient.fetchAnswer(questionId);
-            if (answers.items().size() != link.answersCount()) {
-                description += (": появился новый ответ в " + answers.items().getFirst().creationDate());
+                String description = "(новая информация по вопросу)\n";
+                linkUpdater.update(link.id());
+
+                try {
+                    StackOverflowAnswerResponse answers = stackOverflowClient.fetchAnswer(questionId);
+                    if (answers.items().size() != link.answersCount()) {
+                        description += ("Появился новый ответ в " + answers.items().getFirst().creationDate());
+                    }
+                } catch (Exception e) {
+                    log.info(e.getMessage());
+                }
+
+                List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
+                sendBotUpdates(link, description, tgChatIds);
             }
 
-            List<Long> tgChatIds = linkUpdater.listAllTgChatIdByLinkId(link.id());
-            sendBotUpdates(link, description, tgChatIds);
+        } catch (Exception e) {
+            log.info(e.getMessage());
         }
     }
 

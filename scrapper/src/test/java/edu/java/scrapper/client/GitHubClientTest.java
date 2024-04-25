@@ -14,8 +14,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @WireMockTest(httpPort = 8080)
@@ -43,10 +43,10 @@ public class GitHubClientTest {
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo")));
         assertNotNull(response);
-        assertEquals(1L,response.id());
-        assertEquals("repo",response.name());
-        assertEquals("2024-01-26T19:16:51Z",response.pushedAt().toString());
-        assertEquals("2024-01-26T19:18:01Z",response.updatedAt().toString());
+        assertEquals(1L, response.id());
+        assertEquals("repo", response.name());
+        assertEquals("2024-01-26T19:16:51Z", response.pushedAt().toString());
+        assertEquals("2024-01-26T19:18:01Z", response.updatedAt().toString());
     }
 
     @Test
@@ -58,19 +58,19 @@ public class GitHubClientTest {
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody("""
-                        [
-                          {
-                            "sha": "b6bbc5890aab5f926bfeaaf2ca55cf5f94955651",
-                            "commit": {
-                              "message": "Commit №2"
-                              }
-                          },
-                          {
-                            "sha": "dab38bdeec3c19718964cb7525ef79f9cd9c3289",
-                            "commit": {
-                              "message": "Commit №1"
-                            }
-                          }]""")));
+                    [
+                      {
+                        "sha": "b6bbc5890aab5f926bfeaaf2ca55cf5f94955651",
+                        "commit": {
+                          "message": "Commit №2"
+                          }
+                      },
+                      {
+                        "sha": "dab38bdeec3c19718964cb7525ef79f9cd9c3289",
+                        "commit": {
+                          "message": "Commit №1"
+                        }
+                      }]""")));
 
         ApplicationConfig applicationConfigMock = Mockito.mock(ApplicationConfig.class);
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
@@ -83,11 +83,11 @@ public class GitHubClientTest {
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo/commits")));
         assertNotNull(response);
-        assertEquals(2,response.items().size());
-        assertEquals("b6bbc5890aab5f926bfeaaf2ca55cf5f94955651",response.items().getFirst().sha());
-        assertEquals("Commit №2",response.items().getFirst().commit().message());
-        assertEquals("dab38bdeec3c19718964cb7525ef79f9cd9c3289",response.items().getLast().sha());
-        assertEquals("Commit №1",response.items().getLast().commit().message());
+        assertEquals(2, response.items().size());
+        assertEquals("b6bbc5890aab5f926bfeaaf2ca55cf5f94955651", response.items().getFirst().sha());
+        assertEquals("Commit №2", response.items().getFirst().commit().message());
+        assertEquals("dab38bdeec3c19718964cb7525ef79f9cd9c3289", response.items().getLast().sha());
+        assertEquals("Commit №1", response.items().getLast().commit().message());
     }
 
     @Test
@@ -99,10 +99,10 @@ public class GitHubClientTest {
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody("""
-                        {
-                          "message": "Git Repository is empty.",
-                          "documentation_url": "https://docs.github.com/rest/commits/commits#list-commits"
-                        }""")));
+                    {
+                      "message": "Git Repository is empty.",
+                      "documentation_url": "https://docs.github.com/rest/commits/commits#list-commits"
+                    }""")));
 
         ApplicationConfig applicationConfigMock = Mockito.mock(ApplicationConfig.class);
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
@@ -115,7 +115,7 @@ public class GitHubClientTest {
 
         verify(getRequestedFor(urlEqualTo("/repos/owner/repo/commits")));
         assertNotNull(response);
-        assertEquals(0,response.items().size());
+        assertEquals(0, response.items().size());
     }
 
 }

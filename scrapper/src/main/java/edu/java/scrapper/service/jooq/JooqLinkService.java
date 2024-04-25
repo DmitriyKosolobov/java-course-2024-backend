@@ -9,9 +9,7 @@ import edu.java.scrapper.exception.NotFoundLinkException;
 import edu.java.scrapper.service.LinkService;
 import java.net.URI;
 import java.util.Collection;
-import org.springframework.stereotype.Service;
 
-@Service
 public class JooqLinkService implements LinkService {
 
     private final JooqLinkRepository jooqLinkRepository;

@@ -29,9 +29,9 @@ public class HelpCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         String messageText = "Список доступных команд:\n"
-                + commands.stream()
-                .map(com -> com.command() + " - " + com.description())
-                .collect(Collectors.joining("\n"));
+            + commands.stream()
+            .map(com -> com.command() + " - " + com.description())
+            .collect(Collectors.joining("\n"));
         return new SendMessage(update.message().chat().id(), messageText);
     }
 }
