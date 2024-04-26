@@ -4,13 +4,16 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.dto.StackOverflowAnswerResponse;
 import edu.java.scrapper.client.dto.StackOverflowQuestionResponse;
 import edu.java.scrapper.configuration.ApplicationConfig;
+import edu.java.scrapper.configuration.LinearRetry;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -25,12 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @WireMockTest(httpPort = 8080)
-@SpringBootTest
 public class StackOverflowClientTest {
-
-    @Autowired
-    private Retry retryInstance;
-
     @Test
     @DisplayName("Проверка получения информации о вопросе")
     public void stackOverflowClientQuestionTest() {
@@ -46,8 +44,13 @@ public class StackOverflowClientTest {
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.stackOverflowBaseUrl()).thenReturn("http://localhost:8080/");
+        List<Integer> retryCodes = Arrays.asList(500, 400, 404);
 
-        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retryInstance);
+        Retry retry = LinearRetry.linearBackoff(3, Duration.ofMillis(1000L))
+            .filter(e -> e instanceof WebClientResponseException
+                && retryCodes.contains(((WebClientResponseException) e).getStatusCode().value()));
+
+        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retry);
 
         StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(1L);
 
@@ -94,8 +97,13 @@ public class StackOverflowClientTest {
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.stackOverflowBaseUrl()).thenReturn("http://localhost:8080/");
+        List<Integer> retryCodes = Arrays.asList(500, 400, 404);
 
-        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retryInstance);
+        Retry retry = LinearRetry.linearBackoff(3, Duration.ofMillis(1000L))
+            .filter(e -> e instanceof WebClientResponseException
+                && retryCodes.contains(((WebClientResponseException) e).getStatusCode().value()));
+
+        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retry);
 
         StackOverflowAnswerResponse response = stackOverflowClient.fetchAnswer(1L);
 
@@ -130,8 +138,13 @@ public class StackOverflowClientTest {
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.stackOverflowBaseUrl()).thenReturn("http://localhost:8080/");
+        List<Integer> retryCodes = Arrays.asList(500, 400, 404);
 
-        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retryInstance);
+        Retry retry = LinearRetry.linearBackoff(3, Duration.ofMillis(1000L))
+            .filter(e -> e instanceof WebClientResponseException
+                && retryCodes.contains(((WebClientResponseException) e).getStatusCode().value()));
+
+        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retry);
 
         StackOverflowAnswerResponse response = stackOverflowClient.fetchAnswer(1L);
 

@@ -41,8 +41,9 @@ public class LinearRetry extends Retry {
     }
 
     private Mono<Long> getRetry(Retry.RetrySignal rs) {
-        if (rs.totalRetries() < maxAttempts && errorFilter.test(rs.failure())) {
-            Duration delay = Duration.ofMillis(Math.min(initialInterval * rs.totalRetries(), maxInterval));
+        long retries = rs.totalRetries() + 1;
+        if (retries < maxAttempts && errorFilter.test(rs.failure())) {
+            Duration delay = Duration.ofMillis(Math.min(initialInterval * retries, maxInterval));
             return Mono.delay(delay).thenReturn(rs.totalRetries());
 
         } else {

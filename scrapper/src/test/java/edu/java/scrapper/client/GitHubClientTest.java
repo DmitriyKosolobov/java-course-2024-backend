@@ -4,12 +4,14 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.scrapper.client.dto.GitHubCommitResponse;
 import edu.java.scrapper.client.dto.GitHubRepositoryResponse;
 import edu.java.scrapper.configuration.ApplicationConfig;
+import edu.java.scrapper.configuration.LinearRetry;
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -23,12 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @WireMockTest(httpPort = 8080)
-@SpringBootTest
 public class GitHubClientTest {
-
-    @Autowired
-    private Retry retryInstance;
-
     @Test
     @DisplayName("Получение информации о репозитории")
     public void gitHubClientRepositoryTest() {
@@ -44,8 +41,13 @@ public class GitHubClientTest {
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
+        List<Integer> retryCodes = Arrays.asList(500, 400, 404);
 
-        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retryInstance);
+        Retry retry = LinearRetry.linearBackoff(3, Duration.ofMillis(1000L))
+            .filter(e -> e instanceof WebClientResponseException
+                && retryCodes.contains(((WebClientResponseException) e).getStatusCode().value()));
+
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retry);
 
         GitHubRepositoryResponse response = gitHubClient.fetchRepository("owner", "repo");
 
@@ -84,8 +86,13 @@ public class GitHubClientTest {
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
+        List<Integer> retryCodes = Arrays.asList(500, 400, 404);
 
-        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retryInstance);
+        Retry retry = LinearRetry.linearBackoff(3, Duration.ofMillis(1000L))
+            .filter(e -> e instanceof WebClientResponseException
+                && retryCodes.contains(((WebClientResponseException) e).getStatusCode().value()));
+
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retry);
 
         List<GitHubCommitResponse> response = gitHubClient.fetchCommit("owner", "repo");
 
@@ -116,8 +123,13 @@ public class GitHubClientTest {
         ApplicationConfig.BaseUrls baseUrlsMock = Mockito.mock(ApplicationConfig.BaseUrls.class);
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
+        List<Integer> retryCodes = Arrays.asList(500, 400, 404);
 
-        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retryInstance);
+        Retry retry = LinearRetry.linearBackoff(3, Duration.ofMillis(1000L))
+            .filter(e -> e instanceof WebClientResponseException
+                && retryCodes.contains(((WebClientResponseException) e).getStatusCode().value()));
+
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retry);
 
         List<GitHubCommitResponse> response = gitHubClient.fetchCommit("owner", "repo");
 
