@@ -6,12 +6,18 @@ import edu.java.scrapper.configuration.ApplicationConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
-//@Component
+@Component
 public class GitHubClientImpl implements GitHubClient {
 
     private final WebClient webClient;
+
+    @Autowired
+    private Retry retryInstance;
 
     public GitHubClientImpl(ApplicationConfig applicationConfig) {
         this.webClient = WebClient.builder()
@@ -25,6 +31,7 @@ public class GitHubClientImpl implements GitHubClient {
             .uri("repos/{owner}/{repo}", owner, repo)
             .retrieve()
             .bodyToMono(GitHubRepositoryResponse.class)
+            .retryWhen(retryInstance)
             .block();
     }
 
@@ -35,6 +42,7 @@ public class GitHubClientImpl implements GitHubClient {
                 .uri("repos/{owner}/{repo}/commits", owner, repo)
                 .retrieve()
                 .bodyToMono(GitHubCommitResponse[].class)
+                .retryWhen(retryInstance)
                 .block();
 
             return Arrays.stream(commits).toList();

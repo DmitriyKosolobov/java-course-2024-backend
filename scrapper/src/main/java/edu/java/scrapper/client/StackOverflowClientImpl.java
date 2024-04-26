@@ -3,12 +3,17 @@ package edu.java.scrapper.client;
 import edu.java.scrapper.client.dto.StackOverflowAnswerResponse;
 import edu.java.scrapper.client.dto.StackOverflowQuestionResponse;
 import edu.java.scrapper.configuration.ApplicationConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
-//@Component
+@Component
 public class StackOverflowClientImpl implements StackOverflowClient {
 
     private final WebClient webClient;
+    @Autowired
+    private Retry retryInstance;
 
     public StackOverflowClientImpl(ApplicationConfig applicationConfig) {
         this.webClient = WebClient.builder()
@@ -22,6 +27,7 @@ public class StackOverflowClientImpl implements StackOverflowClient {
             .uri("2.3/questions/{questionId}?order=desc&sort=activity&site=stackoverflow", questionId)
             .retrieve()
             .bodyToMono(StackOverflowQuestionResponse.class)
+            .retryWhen(retryInstance)
             .block();
     }
 
@@ -31,6 +37,7 @@ public class StackOverflowClientImpl implements StackOverflowClient {
             .uri("2.3/questions/{questionId}/answers?order=desc&sort=activity&site=stackoverflow", questionId)
             .retrieve()
             .bodyToMono(StackOverflowAnswerResponse.class)
+            .retryWhen(retryInstance)
             .block();
     }
 }
