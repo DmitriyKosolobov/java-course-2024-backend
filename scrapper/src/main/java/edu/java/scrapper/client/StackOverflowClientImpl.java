@@ -3,7 +3,6 @@ package edu.java.scrapper.client;
 import edu.java.scrapper.client.dto.StackOverflowAnswerResponse;
 import edu.java.scrapper.client.dto.StackOverflowQuestionResponse;
 import edu.java.scrapper.configuration.ApplicationConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -12,10 +11,11 @@ import reactor.util.retry.Retry;
 public class StackOverflowClientImpl implements StackOverflowClient {
 
     private final WebClient webClient;
-    @Autowired
-    private Retry retryInstance;
 
-    public StackOverflowClientImpl(ApplicationConfig applicationConfig) {
+    private final Retry retryInstance;
+
+    public StackOverflowClientImpl(ApplicationConfig applicationConfig, Retry retryInstance) {
+        this.retryInstance = retryInstance;
         this.webClient = WebClient.builder()
             .baseUrl(applicationConfig.urls().stackOverflowBaseUrl())
             .build();

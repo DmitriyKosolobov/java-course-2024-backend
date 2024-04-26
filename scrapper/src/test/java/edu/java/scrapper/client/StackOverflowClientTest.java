@@ -9,6 +9,9 @@ import java.time.ZoneOffset;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import reactor.util.retry.Retry;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -22,7 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @WireMockTest(httpPort = 8080)
+@SpringBootTest
 public class StackOverflowClientTest {
+
+    @Autowired
+    private Retry retryInstance;
 
     @Test
     @DisplayName("Проверка получения информации о вопросе")
@@ -40,7 +47,7 @@ public class StackOverflowClientTest {
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.stackOverflowBaseUrl()).thenReturn("http://localhost:8080/");
 
-        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock);
+        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retryInstance);
 
         StackOverflowQuestionResponse response = stackOverflowClient.fetchQuestion(1L);
 
@@ -88,7 +95,7 @@ public class StackOverflowClientTest {
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.stackOverflowBaseUrl()).thenReturn("http://localhost:8080/");
 
-        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock);
+        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retryInstance);
 
         StackOverflowAnswerResponse response = stackOverflowClient.fetchAnswer(1L);
 
@@ -124,7 +131,7 @@ public class StackOverflowClientTest {
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.stackOverflowBaseUrl()).thenReturn("http://localhost:8080/");
 
-        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock);
+        StackOverflowClientImpl stackOverflowClient = new StackOverflowClientImpl(applicationConfigMock, retryInstance);
 
         StackOverflowAnswerResponse response = stackOverflowClient.fetchAnswer(1L);
 

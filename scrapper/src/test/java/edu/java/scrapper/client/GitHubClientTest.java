@@ -8,6 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import reactor.util.retry.Retry;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -20,7 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @WireMockTest(httpPort = 8080)
+@SpringBootTest
 public class GitHubClientTest {
+
+    @Autowired
+    private Retry retryInstance;
 
     @Test
     @DisplayName("Получение информации о репозитории")
@@ -38,7 +45,7 @@ public class GitHubClientTest {
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
 
-        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock);
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retryInstance);
 
         GitHubRepositoryResponse response = gitHubClient.fetchRepository("owner", "repo");
 
@@ -78,7 +85,7 @@ public class GitHubClientTest {
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
 
-        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock);
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retryInstance);
 
         List<GitHubCommitResponse> response = gitHubClient.fetchCommit("owner", "repo");
 
@@ -110,7 +117,7 @@ public class GitHubClientTest {
         when(applicationConfigMock.urls()).thenReturn(baseUrlsMock);
         when(baseUrlsMock.gitHubBaseUrl()).thenReturn("http://localhost:8080/");
 
-        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock);
+        GitHubClientImpl gitHubClient = new GitHubClientImpl(applicationConfigMock, retryInstance);
 
         List<GitHubCommitResponse> response = gitHubClient.fetchCommit("owner", "repo");
 

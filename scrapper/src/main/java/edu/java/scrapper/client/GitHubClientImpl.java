@@ -6,7 +6,6 @@ import edu.java.scrapper.configuration.ApplicationConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -16,10 +15,10 @@ public class GitHubClientImpl implements GitHubClient {
 
     private final WebClient webClient;
 
-    @Autowired
-    private Retry retryInstance;
+    private final Retry retryInstance;
 
-    public GitHubClientImpl(ApplicationConfig applicationConfig) {
+    public GitHubClientImpl(ApplicationConfig applicationConfig, Retry retryInstance) {
+        this.retryInstance = retryInstance;
         this.webClient = WebClient.builder()
             .baseUrl(applicationConfig.urls().gitHubBaseUrl())
             .build();
