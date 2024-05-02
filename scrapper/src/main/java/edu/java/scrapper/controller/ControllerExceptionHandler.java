@@ -5,6 +5,7 @@ import edu.java.scrapper.exception.ExistChatException;
 import edu.java.scrapper.exception.ExistLinkException;
 import edu.java.scrapper.exception.NotFoundChatException;
 import edu.java.scrapper.exception.NotFoundLinkException;
+import edu.java.scrapper.exception.RateLimitExceededException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +17,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<?> rateLimitExceededHandler(Exception ex) {
+        var errorResponse = createErrorResponse(ex, "Превышено количество запросов", HttpStatus.TOO_MANY_REQUESTS);
+        return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> invalidLinkHandler(Exception ex) {

@@ -102,8 +102,8 @@ public class JpaLinkRepositoryTest extends IntegrationTest {
         String url2 = "https://stackoverflow.com/";
 
         Chat chat = jpaChatRepository.save(new Chat(5L));
-        Link link1 = new Link(url1,chat);
-        Link link2 = new Link(url2,chat);
+        Link link1 = new Link(url1, chat);
+        Link link2 = new Link(url2, chat);
 
         link1.setLastCheckTime(OffsetDateTime.now().minusSeconds(6L));
         link2.setLastCheckTime(OffsetDateTime.now());

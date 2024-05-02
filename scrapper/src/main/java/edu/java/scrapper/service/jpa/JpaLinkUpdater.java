@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 public class JpaLinkUpdater implements LinkUpdater {
     private final JpaLinkRepository jpaLinkRepository;
@@ -18,6 +19,7 @@ public class JpaLinkUpdater implements LinkUpdater {
     }
 
     @Override
+    @Transactional
     public int update(Long linkId) {
         Optional<edu.java.scrapper.domain.jpa.entity.Link> optionalLink = jpaLinkRepository.findById(linkId);
         if (optionalLink.isEmpty()) {
@@ -44,6 +46,7 @@ public class JpaLinkUpdater implements LinkUpdater {
     }
 
     @Override
+    @Transactional
     public List<Long> listAllTgChatIdByLinkId(Long linkId) {
         Optional<edu.java.scrapper.domain.jpa.entity.Link> optionalLink = jpaLinkRepository.findById(linkId);
         if (optionalLink.isEmpty()) {

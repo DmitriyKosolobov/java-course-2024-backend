@@ -76,9 +76,9 @@ public class LinkUpdaterScheduler {
                 linkUpdater.update(link.id());
 
                 try {
-                    GitHubCommitResponse commits = gitHubClient.fetchCommit(owner, repo);
-                    if (commits.items().size() != link.commitsCount()) {
-                        description += ("Новый коммит: " + commits.items().getFirst().commit().message());
+                    List<GitHubCommitResponse> commits = gitHubClient.fetchCommit(owner, repo);
+                    if (commits.size() != link.commitsCount()) {
+                        description += ("Новый коммит: " + commits.getFirst().commit().message());
                     }
                 } catch (Exception e) {
                     log.info(e.getMessage());

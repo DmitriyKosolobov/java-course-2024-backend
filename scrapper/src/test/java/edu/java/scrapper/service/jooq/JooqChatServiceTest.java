@@ -15,18 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class JooqChatServiceTest extends IntegrationTest {
-    @DynamicPropertySource
-    public static void setJdbcAccessType(DynamicPropertyRegistry registry){
-        registry.add("app.database-access-type", () -> "jooq");
-    }
-
     @Autowired
     private ChatService chatService;
+
+    @DynamicPropertySource
+    public static void setJdbcAccessType(DynamicPropertyRegistry registry) {
+        registry.add("app.database-access-type", () -> "jooq");
+    }
 
     @Test
     @Transactional
     @Rollback
-    void registerTest(){
+    void registerTest() {
 
         Assertions.assertDoesNotThrow(() -> {
             chatService.register(5L);
@@ -40,7 +40,7 @@ public class JooqChatServiceTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    void unregisterTest(){
+    void unregisterTest() {
 
         Assertions.assertDoesNotThrow(() -> {
             chatService.register(5L);

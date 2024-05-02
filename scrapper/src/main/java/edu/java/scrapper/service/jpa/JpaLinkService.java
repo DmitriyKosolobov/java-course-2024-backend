@@ -11,7 +11,6 @@ import edu.java.scrapper.service.LinkService;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class JpaLinkService implements LinkService {
@@ -61,7 +60,7 @@ public class JpaLinkService implements LinkService {
                     link.getCommitsCount()
                 );
 
-            } catch (DuplicateKeyException e) {
+            } catch (Exception e) {
                 throw new ExistLinkException();
             }
         }
