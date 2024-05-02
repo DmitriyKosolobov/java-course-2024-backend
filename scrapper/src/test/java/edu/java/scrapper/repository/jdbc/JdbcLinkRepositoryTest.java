@@ -114,14 +114,16 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
         String url1 = "https://github.com/dashboard";
         String url2 = "https://stackoverflow.com/";
 
-        jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
+        jdbcTemplate.update(
+            "INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
             1L,
             url2,
             OffsetDateTime.now(),
             0L,
             0L
         );
-        jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
+        jdbcTemplate.update(
+            "INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
             2L,
             url1,
             OffsetDateTime.now().minusSeconds(6L),
@@ -143,7 +145,8 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
 
         OffsetDateTime dataTime = OffsetDateTime.now().minusSeconds(5L);
 
-        jdbcTemplate.update("INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
+        jdbcTemplate.update(
+            "INSERT INTO links (id, url, last_check_time, answers_count, commits_count) VALUES (?, ?, ?, ?, ?)",
             1L,
             url,
             dataTime,

@@ -2,6 +2,9 @@ app:
   telegram-token: ${TOKEN}
   back-off: constant
   retry-codes: 500, 400, 404
+  topic-name: updates
+  consumer-group-id: bot
+  bootstrap-server: localhost:9092
 
 scrapper:
   api:
@@ -12,6 +15,7 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  kafka.consumer.auto-offset-reset: earliest
 
 server:
   port: 8090
